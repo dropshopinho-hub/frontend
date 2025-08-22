@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { apiFetch } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Input } from './ui/input';
@@ -18,7 +19,7 @@ export default function UserAdminList() {
     setLoading(true);
     setError('');
     try {
-      const response = await fetch('/api/users', {
+  const response = await apiFetch('/api/users', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
@@ -49,7 +50,7 @@ export default function UserAdminList() {
     setSuccess('');
     setLoading(true);
     try {
-      const response = await fetch(`/api/auth/admin/edit-user/${editUser.id}`, {
+  const response = await apiFetch(`/api/auth/admin/edit-user/${editUser.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -78,7 +79,7 @@ export default function UserAdminList() {
     setSuccess('');
     setLoading(true);
     try {
-      const response = await fetch(`/api/auth/admin/delete-user/${user.id}`, {
+  const response = await apiFetch(`/api/auth/admin/delete-user/${user.id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });

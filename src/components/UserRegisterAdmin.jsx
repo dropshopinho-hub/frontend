@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { apiFetch } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Input } from './ui/input';
@@ -22,7 +23,7 @@ export default function UserRegisterAdmin() {
     setSuccess('');
     setLoading(true);
     try {
-      const response = await fetch('/api/auth/admin/create-user', {
+  const response = await apiFetch('/api/auth/admin/create-user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
