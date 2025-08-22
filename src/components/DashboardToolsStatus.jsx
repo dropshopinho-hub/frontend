@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { apiFetch } from '../lib/api';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, XCircle, RotateCcw, Package } from 'lucide-react';
 
@@ -15,7 +16,7 @@ const DashboardToolsStatus = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await fetch('/api/tools', {
+      const response = await apiFetch('/api/tools', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }

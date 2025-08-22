@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { apiFetch } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
@@ -18,7 +19,7 @@ const RejectedAssignmentsPage = () => {
   const fetchRejectedAssignments = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/assignments/rejected', {
+      const response = await apiFetch('/api/assignments/rejected', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
@@ -48,7 +49,7 @@ const RejectedAssignmentsPage = () => {
     try {
       const newStatus = editStatusMap[instanceId];
       if (newStatus === 'Disponível') {
-        const response = await fetch(`/api/assignments/${instanceId}/confirm_rejected`, {
+        const response = await apiFetch(`/api/assignments/${instanceId}/confirm_rejected`, {
           method: 'PUT',
           headers: { 'Authorization': `Bearer ${token}` }
         });

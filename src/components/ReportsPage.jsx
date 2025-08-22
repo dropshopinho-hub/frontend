@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { apiFetch } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -39,7 +40,7 @@ const ReportsPage = () => {
       if (filters.status) queryParams.append('status', filters.status);
       if (filters.user_name) queryParams.append('user_name', filters.user_name);
 
-      const response = await fetch(`/api/reports/tools?${queryParams}`, {
+      const response = await apiFetch(`/api/reports/tools?${queryParams}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -87,7 +88,7 @@ const ReportsPage = () => {
       if (filters.status) queryParams.append('status', filters.status);
       if (filters.user_name) queryParams.append('user_name', filters.user_name);
 
-      const response = await fetch(`/api/reports/tools/pdf?${queryParams}`, {
+      const response = await apiFetch(`/api/reports/tools/pdf?${queryParams}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

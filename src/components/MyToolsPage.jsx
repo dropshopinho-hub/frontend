@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { apiFetch } from '../lib/api';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -26,7 +27,7 @@ const MyToolsPage = () => {
 
   const fetchAssignments = async () => {
     try {
-      const response = await fetch(`/api/assignments/user/${user.id}`, {
+      const response = await apiFetch(`/api/assignments/user/${user.id}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -46,7 +47,7 @@ const MyToolsPage = () => {
 
   const fetchPendingTransfers = async () => {
     try {
-      const response = await fetch(`/api/transfers/pending/${user.id}`, {
+      const response = await apiFetch(`/api/transfers/pending/${user.id}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -65,7 +66,7 @@ const MyToolsPage = () => {
 
   const handleConfirmAssignment = async (assignmentId) => {
     try {
-      const response = await fetch(`/api/assignments/${assignmentId}/confirm`, {
+      const response = await apiFetch(`/api/assignments/${assignmentId}/confirm`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -90,7 +91,7 @@ const MyToolsPage = () => {
 
   const handleConfirmTransfer = async (transferId) => {
     try {
-      const response = await fetch(`/api/transfers/${transferId}/confirm`, {
+      const response = await apiFetch(`/api/transfers/${transferId}/confirm`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -111,7 +112,7 @@ const MyToolsPage = () => {
 
   const handleRejectTransfer = async (transferId) => {
     try {
-      const response = await fetch(`/api/transfers/${transferId}/reject`, {
+      const response = await apiFetch(`/api/transfers/${transferId}/reject`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`

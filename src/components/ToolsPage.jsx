@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { exportToolsToCSV } from '../lib/exportToolsToCSV';
+import { apiFetch } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -43,7 +44,7 @@ const ToolsPage = () => {
     setActionError('');
     try {
       const body = { quantity: parseInt(editQuantity) };
-      const response = await fetch(`/api/tools/${toolToEdit.tool_id}`, {
+      const response = await apiFetch(`/api/tools/${toolToEdit.tool_id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -75,7 +76,7 @@ const ToolsPage = () => {
   const handleDeleteTool = async () => {
     setActionError('');
     try {
-      const response = await fetch(`/api/tools/${toolToDelete.tool_id}`, {
+      const response = await apiFetch(`/api/tools/${toolToDelete.tool_id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -113,7 +114,7 @@ const ToolsPage = () => {
 
   const fetchTools = async () => {
     try {
-      const response = await fetch('/api/tools', {
+      const response = await apiFetch('/api/tools', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -137,7 +138,7 @@ const ToolsPage = () => {
     setError('');
 
     try {
-      const response = await fetch('/api/tools', {
+      const response = await apiFetch('/api/tools', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

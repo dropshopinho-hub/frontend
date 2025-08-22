@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { apiFetch } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -37,7 +38,7 @@ const AssignmentsPage = () => {
   const fetchData = async () => {
     try {
       // Fetch available tools
-      const toolsResponse = await fetch('/api/tools', {
+      const toolsResponse = await apiFetch('/api/tools', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -51,7 +52,7 @@ const AssignmentsPage = () => {
       }
 
       // Fetch users
-      const usersResponse = await fetch('/api/users', {
+      const usersResponse = await apiFetch('/api/users', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -73,7 +74,7 @@ const AssignmentsPage = () => {
     setError('');
 
     try {
-      const response = await fetch('/api/assignments', {
+      const response = await apiFetch('/api/assignments', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

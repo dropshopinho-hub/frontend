@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { apiFetch } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -27,7 +28,7 @@ const ReturnsPage = () => {
     try {
       if (!isAdmin) {
         // Fetch user's borrowed tools
-        const assignmentsResponse = await fetch(`/api/assignments/user/${user.id}`, {
+        const assignmentsResponse = await apiFetch(`/api/assignments/user/${user.id}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -41,7 +42,7 @@ const ReturnsPage = () => {
 
       if (isAdmin) {
         // Fetch pending returns for admin
-        const returnsResponse = await fetch('/api/returns/pending', {
+        const returnsResponse = await apiFetch('/api/returns/pending', {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -68,7 +69,7 @@ const ReturnsPage = () => {
     }
     try {
       for (const toolId of selectedTools) {
-        const response = await fetch('/api/returns', {
+        const response = await apiFetch('/api/returns', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -92,7 +93,7 @@ const ReturnsPage = () => {
 
   const handleAcceptReturn = async (returnId) => {
     try {
-      const response = await fetch(`/api/returns/${returnId}/accept`, {
+      const response = await apiFetch(`/api/returns/${returnId}/accept`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -112,7 +113,7 @@ const ReturnsPage = () => {
 
   const handleRejectReturn = async (returnId) => {
     try {
-      const response = await fetch(`/api/returns/${returnId}/reject`, {
+      const response = await apiFetch(`/api/returns/${returnId}/reject`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`
