@@ -199,7 +199,8 @@ const MyToolsPage = () => {
         </Alert>
       )}
       {infoMessage && (
-        <div style={{ color: 'red', fontWeight: 'bold', fontStyle: 'italic', marginBottom: '1rem' }}>
+        <div style={{ color: 'red', fontWeight: 'bold', fontStyle: 'italic', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <img src="/recusa.png" alt="Recusa" style={{ width: 48, height: 48, borderRadius: 8 }} />
           {infoMessage}
         </div>
       )}
