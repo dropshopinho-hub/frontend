@@ -187,7 +187,7 @@ const ReturnsPage = () => {
                   >
                     {filteredTools.length > 0 && filteredTools.every(t => selectedTools.includes(t.id)) ? 'Desmarcar Tudo' : 'Selecionar Tudo'}
                   </Button>
-                  <div style={{ maxHeight: 300, overflowY: 'auto', borderRadius: 8, border: '1px solid #e5e7eb' }}>
+                  <div className="overflow-x-auto overflow-y-auto max-h-[40vh]" style={{ borderRadius: 8, border: '1px solid #e5e7eb' }}>
                     <Table>
                       <TableHeader>
                         <TableRow>

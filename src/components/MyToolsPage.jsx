@@ -218,52 +218,54 @@ const MyToolsPage = () => {
               className="w-full"
             />
           </div>
-          {sortedPendingAssignments.length === 0 ? (
-            <p className="text-center text-gray-500 py-4">
-              Nenhuma atribuição pendente
-            </p>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead onClick={() => handleSort('tool_name')} style={{ cursor: 'pointer' }}>Ferramenta</TableHead>
-                  <TableHead onClick={() => handleSort('quantity')} style={{ cursor: 'pointer' }}>Quantidade</TableHead>
-                  <TableHead onClick={() => handleSort('assigned_at')} style={{ cursor: 'pointer' }}>Data de Atribuição</TableHead>
-                  <TableHead>Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {sortedPendingAssignments.map((assignment) => (
-                  <TableRow key={assignment.id}>
-                    <TableCell className="font-medium">{assignment.tool_name}</TableCell>
-                    <TableCell>{assignment.quantity}</TableCell>
-                    <TableCell>
-                      {new Date(assignment.assigned_at).toLocaleDateString('pt-BR')}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex space-x-2">
-                        <Button
-                          size="sm"
-                          onClick={() => handleConfirmAssignment(assignment.id)}
-                        >
-                          <Check className="w-4 h-4 mr-1" />
-                          Aceitar
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={handleRejectAssignment}
-                        >
-                          <X className="w-4 h-4 mr-1" />
-                          Recusar
-                        </Button>
-                      </div>
-                    </TableCell>
+          <div className="overflow-x-auto overflow-y-auto max-h-[40vh]">
+            {sortedPendingAssignments.length === 0 ? (
+              <p className="text-center text-gray-500 py-4">
+                Nenhuma atribuição pendente
+              </p>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead onClick={() => handleSort('tool_name')} style={{ cursor: 'pointer' }}>Ferramenta</TableHead>
+                    <TableHead onClick={() => handleSort('quantity')} style={{ cursor: 'pointer' }}>Quantidade</TableHead>
+                    <TableHead onClick={() => handleSort('assigned_at')} style={{ cursor: 'pointer' }}>Data de Atribuição</TableHead>
+                    <TableHead>Ações</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
+                </TableHeader>
+                <TableBody>
+                  {sortedPendingAssignments.map((assignment) => (
+                    <TableRow key={assignment.id}>
+                      <TableCell className="font-medium">{assignment.tool_name}</TableCell>
+                      <TableCell>{assignment.quantity}</TableCell>
+                      <TableCell>
+                        {new Date(assignment.assigned_at).toLocaleDateString('pt-BR')}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex space-x-2">
+                          <Button
+                            size="sm"
+                            onClick={() => handleConfirmAssignment(assignment.id)}
+                          >
+                            <Check className="w-4 h-4 mr-1" />
+                            Aceitar
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={handleRejectAssignment}
+                          >
+                            <X className="w-4 h-4 mr-1" />
+                            Recusar
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </div>
         </CardContent>
       </Card>
 
@@ -274,46 +276,48 @@ const MyToolsPage = () => {
             <CardTitle>Transferências Pendentes</CardTitle>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Ferramenta</TableHead>
-                  <TableHead>Quantidade</TableHead>
-                  <TableHead>Data da Transferência</TableHead>
-                  <TableHead>Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {pendingTransfers.map((transfer) => (
-                  <TableRow key={transfer.id}>
-                    <TableCell className="font-medium">{transfer.tool_name}</TableCell>
-                    <TableCell>{transfer.quantity}</TableCell>
-                    <TableCell>
-                      {new Date(transfer.transfer_initiated_at).toLocaleDateString('pt-BR')}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex space-x-2">
-                        <Button
-                          size="sm"
-                          onClick={() => handleConfirmTransfer(transfer.id)}
-                        >
-                          <Check className="w-4 h-4 mr-1" />
-                          Aceitar
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleRejectTransfer(transfer.id)}
-                        >
-                          <X className="w-4 h-4 mr-1" />
-                          Recusar
-                        </Button>
-                      </div>
-                    </TableCell>
+            <div className="overflow-x-auto overflow-y-auto max-h-[40vh]">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Ferramenta</TableHead>
+                    <TableHead>Quantidade</TableHead>
+                    <TableHead>Data da Transferência</TableHead>
+                    <TableHead>Ações</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {pendingTransfers.map((transfer) => (
+                    <TableRow key={transfer.id}>
+                      <TableCell className="font-medium">{transfer.tool_name}</TableCell>
+                      <TableCell>{transfer.quantity}</TableCell>
+                      <TableCell>
+                        {new Date(transfer.transfer_initiated_at).toLocaleDateString('pt-BR')}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex space-x-2">
+                          <Button
+                            size="sm"
+                            onClick={() => handleConfirmTransfer(transfer.id)}
+                          >
+                            <Check className="w-4 h-4 mr-1" />
+                            Aceitar
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleRejectTransfer(transfer.id)}
+                          >
+                            <X className="w-4 h-4 mr-1" />
+                            Recusar
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </CardContent>
         </Card>
       )}
@@ -332,38 +336,40 @@ const MyToolsPage = () => {
               className="w-full"
             />
           </div>
-          {sortedConfirmedAssignments.length === 0 ? (
-            <p className="text-center text-gray-500 py-4">
-              Nenhuma ferramenta emprestada
-            </p>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead onClick={() => handleSort('tool_name')} style={{ cursor: 'pointer' }}>Ferramenta</TableHead>
-                  <TableHead onClick={() => handleSort('quantity')} style={{ cursor: 'pointer' }}>Quantidade</TableHead>
-                  <TableHead onClick={() => handleSort('assigned_at')} style={{ cursor: 'pointer' }}>Data de Confirmação</TableHead>
-                  <TableHead onClick={() => handleSort('status')} style={{ cursor: 'pointer' }}>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {sortedConfirmedAssignments.map((assignment) => (
-                  <TableRow key={assignment.id}>
-                    <TableCell className="font-medium">{assignment.tool_name}</TableCell>
-                    <TableCell>{assignment.quantity}</TableCell>
-                    <TableCell>
-                      {new Date(assignment.assigned_at).toLocaleDateString('pt-BR')}
-                    </TableCell>
-                    <TableCell>
-                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600">
-                        {assignment.status}
-                      </span>
-                    </TableCell>
+          <div className="overflow-x-auto overflow-y-auto max-h-[40vh]">
+            {sortedConfirmedAssignments.length === 0 ? (
+              <p className="text-center text-gray-500 py-4">
+                Nenhuma ferramenta emprestada
+              </p>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead onClick={() => handleSort('tool_name')} style={{ cursor: 'pointer' }}>Ferramenta</TableHead>
+                    <TableHead onClick={() => handleSort('quantity')} style={{ cursor: 'pointer' }}>Quantidade</TableHead>
+                    <TableHead onClick={() => handleSort('assigned_at')} style={{ cursor: 'pointer' }}>Data de Confirmação</TableHead>
+                    <TableHead onClick={() => handleSort('status')} style={{ cursor: 'pointer' }}>Status</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
+                </TableHeader>
+                <TableBody>
+                  {sortedConfirmedAssignments.map((assignment) => (
+                    <TableRow key={assignment.id}>
+                      <TableCell className="font-medium">{assignment.tool_name}</TableCell>
+                      <TableCell>{assignment.quantity}</TableCell>
+                      <TableCell>
+                        {new Date(assignment.assigned_at).toLocaleDateString('pt-BR')}
+                      </TableCell>
+                      <TableCell>
+                        <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600">
+                          {assignment.status}
+                        </span>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </div>
         </CardContent>
       </Card>
     </div>

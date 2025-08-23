@@ -290,47 +290,49 @@ const ToolsPage = () => {
           <CardTitle>Lista de Ferramentas</CardTitle>
         </CardHeader>
         <CardContent>
-          {filteredTools.length === 0 ? (
-            <p className="text-center text-gray-500 py-8">
-              {tools.length === 0 ? 'Nenhuma ferramenta cadastrada' : 'Nenhuma ferramenta encontrada'}
-            </p>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Nome da Ferramenta</TableHead>
-                  <TableHead>Quantidade</TableHead>
-                  <TableHead>Usuário</TableHead>
-                  <TableHead>Data de Atribuição</TableHead>
-                  <TableHead>Status</TableHead>
-                  {isAdmin && <TableHead>Ações</TableHead>}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredTools.map((tool, index) => (
-                  <TableRow key={index}>
-                    <TableCell className="font-medium">{tool.tool_name}</TableCell>
-                    <TableCell>{tool.quantity}</TableCell>
-                    <TableCell>{tool.username || '-'}</TableCell>
-                    <TableCell>
-                      {tool.assigned_at ? new Date(tool.assigned_at).toLocaleDateString('pt-BR') : '-'}
-                    </TableCell>
-                    <TableCell>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(tool.status)}`}>
-                        {tool.status}
-                      </span>
-                    </TableCell>
-                    {isAdmin && (
-                      <TableCell className="space-x-2">
-                        <Button size="sm" variant="outline" onClick={() => openEditDialog(tool)}>Editar</Button>
-                        <Button size="sm" variant="destructive" onClick={() => openDeleteConfirm(tool)}>Excluir</Button>
-                      </TableCell>
-                    )}
+          <div className="overflow-x-auto overflow-y-auto max-h-[60vh]">
+            {filteredTools.length === 0 ? (
+              <p className="text-center text-gray-500 py-8">
+                {tools.length === 0 ? 'Nenhuma ferramenta cadastrada' : 'Nenhuma ferramenta encontrada'}
+              </p>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Nome da Ferramenta</TableHead>
+                    <TableHead>Quantidade</TableHead>
+                    <TableHead>Usuário</TableHead>
+                    <TableHead>Data de Atribuição</TableHead>
+                    <TableHead>Status</TableHead>
+                    {isAdmin && <TableHead>Ações</TableHead>}
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
+                </TableHeader>
+                <TableBody>
+                  {filteredTools.map((tool, index) => (
+                    <TableRow key={index}>
+                      <TableCell className="font-medium">{tool.tool_name}</TableCell>
+                      <TableCell>{tool.quantity}</TableCell>
+                      <TableCell>{tool.username || '-'}</TableCell>
+                      <TableCell>
+                        {tool.assigned_at ? new Date(tool.assigned_at).toLocaleDateString('pt-BR') : '-'}
+                      </TableCell>
+                      <TableCell>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(tool.status)}`}>
+                          {tool.status}
+                        </span>
+                      </TableCell>
+                      {isAdmin && (
+                        <TableCell className="space-x-2">
+                          <Button size="sm" variant="outline" onClick={() => openEditDialog(tool)}>Editar</Button>
+                          <Button size="sm" variant="destructive" onClick={() => openDeleteConfirm(tool)}>Excluir</Button>
+                        </TableCell>
+                      )}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </div>
         </CardContent>
       </Card>
 

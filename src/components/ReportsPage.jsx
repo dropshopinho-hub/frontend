@@ -232,42 +232,44 @@ const ReportsPage = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {loading ? (
-            <p className="text-center py-8">Carregando relatório...</p>
-          ) : filteredData.length === 0 ? (
-            <p className="text-center text-gray-500 py-8">
-              {reportData.length === 0 ? 'Nenhum dado encontrado' : 'Nenhum item corresponde aos filtros aplicados'}
-            </p>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Nome da Ferramenta</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Usuário</TableHead>
-                  <TableHead>Data de Atribuição</TableHead>
-                  <TableHead>Quantidade</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredData.map((item, index) => (
-                  <TableRow key={index}>
-                    <TableCell className="font-medium">{item.tool_name}</TableCell>
-                    <TableCell>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(item.status)}`}>
-                        {item.status}
-                      </span>
-                    </TableCell>
-                    <TableCell>{item.username || '-'}</TableCell>
-                    <TableCell>
-                      {item.assigned_at ? new Date(item.assigned_at).toLocaleDateString('pt-BR') : '-'}
-                    </TableCell>
-                    <TableCell>{item.quantity}</TableCell>
+          <div className="overflow-x-auto overflow-y-auto max-h-[40vh]">
+            {loading ? (
+              <p className="text-center py-8">Carregando relatório...</p>
+            ) : filteredData.length === 0 ? (
+              <p className="text-center text-gray-500 py-8">
+                {reportData.length === 0 ? 'Nenhum dado encontrado' : 'Nenhum item corresponde aos filtros aplicados'}
+              </p>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Nome da Ferramenta</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Usuário</TableHead>
+                    <TableHead>Data de Atribuição</TableHead>
+                    <TableHead>Quantidade</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
+                </TableHeader>
+                <TableBody>
+                  {filteredData.map((item, index) => (
+                    <TableRow key={index}>
+                      <TableCell className="font-medium">{item.tool_name}</TableCell>
+                      <TableCell>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(item.status)}`}>
+                          {item.status}
+                        </span>
+                      </TableCell>
+                      <TableCell>{item.username || '-'}</TableCell>
+                      <TableCell>
+                        {item.assigned_at ? new Date(item.assigned_at).toLocaleDateString('pt-BR') : '-'}
+                      </TableCell>
+                      <TableCell>{item.quantity}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </div>
         </CardContent>
       </Card>
 

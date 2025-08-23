@@ -230,38 +230,40 @@ const TransfersPage = () => {
           <CardTitle>Ferramentas Disponíveis para Transferência</CardTitle>
         </CardHeader>
         <CardContent>
-          {borrowedTools.length === 0 ? (
-            <p className="text-center text-gray-500 py-8">
-              Você não possui ferramentas emprestadas para transferir
-            </p>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Ferramenta</TableHead>
-                  <TableHead>Quantidade</TableHead>
-                  <TableHead>Data de Confirmação</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {borrowedTools.map((tool) => (
-                  <TableRow key={tool.id}>
-                    <TableCell className="font-medium">{tool.tool_name}</TableCell>
-                    <TableCell>{tool.quantity}</TableCell>
-                    <TableCell>
-                      {new Date(tool.assigned_at).toLocaleDateString('pt-BR')}
-                    </TableCell>
-                    <TableCell>
-                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600">
-                        {tool.status}
-                      </span>
-                    </TableCell>
+          <div className="overflow-x-auto overflow-y-auto max-h-[40vh]">
+            {borrowedTools.length === 0 ? (
+              <p className="text-center text-gray-500 py-8">
+                Você não possui ferramentas emprestadas para transferir
+              </p>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Ferramenta</TableHead>
+                    <TableHead>Quantidade</TableHead>
+                    <TableHead>Data de Confirmação</TableHead>
+                    <TableHead>Status</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
+                </TableHeader>
+                <TableBody>
+                  {borrowedTools.map((tool) => (
+                    <TableRow key={tool.id}>
+                      <TableCell className="font-medium">{tool.tool_name}</TableCell>
+                      <TableCell>{tool.quantity}</TableCell>
+                      <TableCell>
+                        {new Date(tool.assigned_at).toLocaleDateString('pt-BR')}
+                      </TableCell>
+                      <TableCell>
+                        <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600">
+                          {tool.status}
+                        </span>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </div>
         </CardContent>
       </Card>
 
