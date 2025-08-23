@@ -45,9 +45,30 @@ const Layout = ({ children, currentPage, setCurrentPage }) => {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Mobile menu: aparece apenas em telas pequenas */}
+        <nav className="flex gap-2 mb-6 md:hidden">
+          {filteredMenuItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setCurrentPage(item.id)}
+                className={`flex flex-col items-center px-2 py-2 text-xs font-medium rounded transition-colors ${
+                  currentPage === item.id
+                    ? 'bg-blue-50 text-blue-700'
+                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                }`}
+                style={{ minWidth: 60 }}
+              >
+                <Icon className="w-5 h-5 mb-1" />
+                {item.label}
+              </button>
+            );
+          })}
+        </nav>
         <div className="flex gap-8">
-          {/* Sidebar */}
-          <div className="w-64 flex-shrink-0">
+          {/* Sidebar: aparece apenas em telas médias/grandes */}
+          <div className="w-64 flex-shrink-0 hidden md:block">
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Menu</CardTitle>
