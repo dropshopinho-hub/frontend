@@ -38,8 +38,8 @@ const TransfersPage = () => {
       });
 
       if (assignmentsResponse.ok) {
-        const assignmentsData = await assignmentsResponse.json();
-        setBorrowedTools(assignmentsData.confirmed || []);
+  const assignmentsData = await assignmentsResponse.json();
+  setBorrowedTools(assignmentsData.tools || []);
       }
 
       // Fetch users
