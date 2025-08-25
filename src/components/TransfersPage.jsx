@@ -39,7 +39,7 @@ const TransfersPage = () => {
 
       if (assignmentsResponse.ok) {
   const assignmentsData = await assignmentsResponse.json();
-  setBorrowedTools(assignmentsData.tools || []);
+  setBorrowedTools(assignmentsData.confirmed || []);
       }
 
       // Fetch users
