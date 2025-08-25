@@ -31,7 +31,7 @@ const TransfersPage = () => {
   const fetchData = async () => {
     try {
       // Fetch user's borrowed tools
-      const assignmentsResponse = await fetch(`/api/assignments/user/${user.id}`, {
+      const assignmentsResponse = await apiFetch(`/api/assignments/user/${user.id}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -43,7 +43,7 @@ const TransfersPage = () => {
       }
 
       // Fetch users
-      const usersResponse = await fetch('/api/users', {
+      const usersResponse = await apiFetch('/api/users', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -74,7 +74,7 @@ const TransfersPage = () => {
     }
     try {
       for (const toolId of selectedTools) {
-        const response = await fetch('/api/transfers', {
+        const response = await apiFetch('/api/transfers', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
