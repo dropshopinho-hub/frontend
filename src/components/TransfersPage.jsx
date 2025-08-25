@@ -41,10 +41,12 @@ const TransfersPage = () => {
       if (assignmentsResponse.ok) {
   const assignmentsData = await assignmentsResponse.json();
   const toolsArr = assignmentsData.confirmed || assignmentsData.tools || [];
-  setBorrowedTools(toolsArr);
-  console.log('borrowedTools:', toolsArr);
-  if (Array.isArray(toolsArr)) {
-    toolsArr.forEach((tool, idx) => {
+  // Filtra apenas ferramentas emprestadas para o usuário logado
+  const filtered = toolsArr.filter(tool => tool.status === 'Emprestado' && tool.user_id === user.id);
+  setBorrowedTools(filtered);
+  console.log('borrowedTools filtradas:', filtered);
+  if (Array.isArray(filtered)) {
+    filtered.forEach((tool, idx) => {
       console.log(`Ferramenta[${idx}]:`, tool);
     });
   }
