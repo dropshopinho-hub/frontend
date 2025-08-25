@@ -29,7 +29,8 @@ const TransfersPage = () => {
   }, []);
 
   const fetchData = async () => {
-    try {
+  console.log('fetchData chamado');
+  try {
       // Fetch user's borrowed tools
       const assignmentsResponse = await apiFetch(`/api/assignments/user/${user.id}`, {
         headers: {
@@ -40,6 +41,7 @@ const TransfersPage = () => {
       if (assignmentsResponse.ok) {
   const assignmentsData = await assignmentsResponse.json();
   setBorrowedTools(assignmentsData.confirmed || []);
+  console.log('borrowedTools:', assignmentsData.confirmed || []);
       }
 
       // Fetch users
