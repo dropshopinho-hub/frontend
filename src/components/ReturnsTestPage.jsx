@@ -19,6 +19,20 @@ const ReturnsTestPage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedTools, setSelectedTools] = useState([]);
   const [search, setSearch] = useState("");
+  const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState("");
+  const [toolQuantities, setToolQuantities] = useState({});
+  // Buscar usuários para transferência
+  useEffect(() => {
+    if (!isAdmin && isDialogOpen) {
+      apiFetch('/api/users', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+        .then(res => res.json())
+        .then(data => setUsers(data.users || []))
+        .catch(() => setUsers([]));
+    }
+  }, [isDialogOpen, isAdmin, token]);
 
   useEffect(() => {
     fetchData();
@@ -55,27 +69,35 @@ const ReturnsTestPage = () => {
     }
   };
 
-  const handleReturn = async (e) => {
+  const handleTransfer = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
+    if (!selectedUser) {
+      setError("Selecione o usuário de destino.");
+      return;
+    }
     if (selectedTools.length === 0) {
-      setError('Selecione pelo menos uma ferramenta para devolver.');
+      setError("Selecione pelo menos uma ferramenta para transferir.");
       return;
     }
     try {
       for (const toolId of selectedTools) {
-        const response = await apiFetch('/api/returns', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ tool_instance_id: toolId })
-        });
-        if (!response.ok) {
-          const error = await response.json();
-          setError(error.error || 'Erro ao solicitar devolução.');
-          return;
+        const quantity = toolQuantities[toolId] || 1;
+        // Envia uma requisição para cada unidade (ajuste se backend aceitar quantidade)
+        for (let i = 0; i < quantity; i++) {
+          const response = await apiFetch('/api/transfers', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ tool_instance_id: toolId, to_user_id: selectedUser })
+          });
+          if (!response.ok) {
+            const error = await response.json();
+            setError(error.error || 'Erro ao solicitar transferência.');
+            return;
+          }
         }
       }
       setSelectedTools([]);
@@ -152,7 +174,20 @@ const ReturnsTestPage = () => {
                 <DialogTitle>Transferir Ferramentas</DialogTitle>
                 <DialogDescription>Selecione as ferramentas que deseja transferir</DialogDescription>
               </DialogHeader>
-              <form onSubmit={handleReturn} className="space-y-4">
+              <form onSubmit={handleTransfer} className="space-y-4">
+                <div>
+                  <Label>Usuário de Destino</Label>
+                  <Select value={selectedUser} onValueChange={setSelectedUser}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Selecione o usuário" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {users.map(u => (
+                        <SelectItem key={u.id} value={u.id}>{u.username}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
                 <div>
                   <Label>Pesquisar</Label>
                   <input
@@ -200,14 +235,29 @@ const ReturnsTestPage = () => {
                                 onChange={e => {
                                   if (e.target.checked) {
                                     setSelectedTools([...selectedTools, tool.id]);
+                                    setToolQuantities(q => ({ ...q, [tool.id]: 1 }));
                                   } else {
                                     setSelectedTools(selectedTools.filter(id => id !== tool.id));
+                                    setToolQuantities(q => { const nq = { ...q }; delete nq[tool.id]; return nq; });
                                   }
                                 }}
                               />
                             </TableCell>
                             <TableCell>{tool.tool_name}</TableCell>
-                            <TableCell>{tool.quantity}</TableCell>
+                            <TableCell>
+                              <input
+                                type="number"
+                                min={1}
+                                max={tool.quantity}
+                                value={toolQuantities[tool.id] || 1}
+                                disabled={!selectedTools.includes(tool.id)}
+                                onChange={e => {
+                                  const val = Math.max(1, Math.min(Number(e.target.value), tool.quantity));
+                                  setToolQuantities(q => ({ ...q, [tool.id]: val }));
+                                }}
+                                style={{ width: 60 }}
+                              />
+                            </TableCell>
                             <TableCell>{tool.assigned_at ? new Date(tool.assigned_at).toLocaleDateString('pt-BR') : '-'}</TableCell>
                             <TableCell>{tool.status}</TableCell>
                           </TableRow>
