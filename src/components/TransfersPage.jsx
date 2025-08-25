@@ -40,10 +40,11 @@ const TransfersPage = () => {
 
       if (assignmentsResponse.ok) {
   const assignmentsData = await assignmentsResponse.json();
-  setBorrowedTools(assignmentsData.confirmed || []);
-  console.log('borrowedTools:', assignmentsData.confirmed || []);
-  if (Array.isArray(assignmentsData.confirmed)) {
-    assignmentsData.confirmed.forEach((tool, idx) => {
+  const toolsArr = assignmentsData.confirmed || assignmentsData.tools || [];
+  setBorrowedTools(toolsArr);
+  console.log('borrowedTools:', toolsArr);
+  if (Array.isArray(toolsArr)) {
+    toolsArr.forEach((tool, idx) => {
       console.log(`Ferramenta[${idx}]:`, tool);
     });
   }
