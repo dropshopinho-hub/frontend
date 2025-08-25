@@ -42,6 +42,11 @@ const TransfersPage = () => {
   const assignmentsData = await assignmentsResponse.json();
   setBorrowedTools(assignmentsData.confirmed || []);
   console.log('borrowedTools:', assignmentsData.confirmed || []);
+  if (Array.isArray(assignmentsData.confirmed)) {
+    assignmentsData.confirmed.forEach((tool, idx) => {
+      console.log(`Ferramenta[${idx}]:`, tool);
+    });
+  }
       }
 
       // Fetch users
