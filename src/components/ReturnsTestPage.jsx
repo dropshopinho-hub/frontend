@@ -163,7 +163,7 @@ const ReturnsTestPage = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Teste de Transferência</h2>
+  <h2 className="text-2xl font-bold">Transferência GP</h2>
         {!isAdmin && borrowedTools.length > 0 && (
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
@@ -171,7 +171,7 @@ const ReturnsTestPage = () => {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Transferir Ferramentas</DialogTitle>
+                <DialogTitle>Transferência GP</DialogTitle>
                 <DialogDescription>Selecione as ferramentas que deseja transferir</DialogDescription>
               </DialogHeader>
               <form onSubmit={handleTransfer} className="space-y-4">
@@ -288,7 +288,7 @@ const ReturnsTestPage = () => {
       {isAdmin && (
         <Card>
           <CardHeader>
-            <CardTitle>Transferências Pendentes de Aprovação</CardTitle>
+            <CardTitle>Transferências GP Pendentes de Aprovação</CardTitle>
           </CardHeader>
           <CardContent>
             {pendingReturns.length === 0 ? (
@@ -346,7 +346,7 @@ const ReturnsTestPage = () => {
       {!isAdmin && (
         <Card>
           <CardHeader>
-            <CardTitle>Ferramentas Disponíveis para Transferência</CardTitle>
+            <CardTitle>Ferramentas Disponíveis para Transferência GP</CardTitle>
           </CardHeader>
           <CardContent>
             {borrowedTools.length === 0 ? (
@@ -387,20 +387,20 @@ const ReturnsTestPage = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Como Funciona a Transferência</CardTitle>
+          <CardTitle>Como Funciona a Transferência GP</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-2 text-sm text-gray-600">
             {isAdmin ? (
               <>
-                <p>1. Visualize as solicitações de transferência dos usuários</p>
-                <p>2. Aceite a transferência para transferir a ferramenta</p>
-                <p>3. Recuse a transferência para manter a ferramenta com o usuário</p>
+                <p>1. Visualize as solicitações de transferência GP dos usuários</p>
+                <p>2. Aceite a transferência GP para transferir a ferramenta</p>
+                <p>3. Recuse a transferência GP para manter a ferramenta com o usuário</p>
               </>
             ) : (
               <>
                 <p>1. Selecione uma ferramenta que você possui emprestada</p>
-                <p>2. A solicitação de transferência será enviada ao administrador</p>
+                <p>2. A solicitação de transferência GP será enviada ao administrador</p>
                 <p>3. Aguarde a aprovação do administrador</p>
                 <p>4. Se aprovada, a ferramenta será transferida</p>
                 <p>5. Se recusada, a ferramenta permanecerá com você</p>
