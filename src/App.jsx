@@ -7,6 +7,7 @@ import AssignmentsPage from './components/AssignmentsPage';
 import MyToolsPage from './components/MyToolsPage';
 import TransfersPage from './components/TransfersPage';
 import ReturnsPage from './components/ReturnsPage';
+import ReturnsTestPage from './components/ReturnsTestPage';
 import ReportsPage from './components/ReportsPage';
 import DashboardToolsStatus from './components/DashboardToolsStatus';
 // import RejectedAssignmentsPage from './components/RejectedAssignmentsPage';
@@ -44,14 +45,14 @@ const AppContent = () => {
         return <TransfersPage />;
       case 'returns':
         return <ReturnsPage />;
+      case 'returns-test':
+        return <ReturnsTestPage />;
       case 'reports':
         return <ReportsPage />;
       case 'user-register':
         return <UserRegisterAdmin />;
       case 'user-admin-list':
         return <UserAdminList />;
-      case 'dashboard-tools-status':
-        return <DashboardToolsStatus />;
       default:
         return <ToolsPage />;
     }

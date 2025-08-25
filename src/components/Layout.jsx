@@ -9,15 +9,16 @@ const Layout = ({ children, currentPage, setCurrentPage }) => {
 
   const menuItems = [
   { id: 'dashboard-tools-status', label: 'Dashboard de Status', icon: FileText, adminOnly: false },
-    { id: 'tools', label: 'Ferramentas', icon: Package, adminOnly: true },
-    { id: 'assignments', label: 'Atribuições', icon: Users, adminOnly: true },
+  { id: 'tools', label: 'Ferramentas', icon: Package, adminOnly: true },
+  { id: 'assignments', label: 'Atribuições', icon: Users, adminOnly: true },
   // { id: 'rejected-assignments', label: 'Atribuições Recusadas', icon: FileText, adminOnly: true },
-    { id: 'my-tools', label: 'Minhas Ferramentas', icon: Settings, adminOnly: false },
-    { id: 'transfers', label: 'Transferências', icon: ArrowRightLeft, adminOnly: false },
-    { id: 'returns', label: 'Devoluções', icon: RotateCcw, adminOnly: false },
+  { id: 'my-tools', label: 'Minhas Ferramentas', icon: Settings, adminOnly: false },
+  { id: 'transfers', label: 'Transferências', icon: ArrowRightLeft, adminOnly: false },
+  { id: 'returns', label: 'Devoluções', icon: RotateCcw, adminOnly: false },
+  { id: 'returns-test', label: 'Teste de Transferência', icon: RotateCcw, adminOnly: false },
   // { id: 'reports', label: 'Relatórios', icon: FileText, adminOnly: true },
-    { id: 'user-register', label: 'Cadastrar Usuário', icon: Users, adminOnly: true },
-    { id: 'user-admin-list', label: 'Gerenciar Usuários', icon: Settings, adminOnly: true },
+  { id: 'user-register', label: 'Cadastrar Usuário', icon: Users, adminOnly: true },
+  { id: 'user-admin-list', label: 'Gerenciar Usuários', icon: Settings, adminOnly: true },
   ];
 
   const filteredMenuItems = menuItems.filter(item => !item.adminOnly || isAdmin);
