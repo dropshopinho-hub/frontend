@@ -17,20 +17,21 @@ const TransfersPage = () => {
   const [error, setError] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedTools, setSelectedTools] = useState([]);
-    const [toUserId, setToUserId] = useState('');
-    const [toolSearch, setToolSearch] = useState('');
-    const [selectAllTools, setSelectAllTools] = useState(false);
-    const filteredTools = borrowedTools.filter(tool =>
-      tool.tool_name.toLowerCase().includes(toolSearch.toLowerCase())
-    );
+  const [toUserId, setToUserId] = useState('');
+  const [toolSearch, setToolSearch] = useState('');
+  const [selectAllTools, setSelectAllTools] = useState(false);
+
+  const filteredTools = borrowedTools.filter(tool =>
+    (tool.tool_name || '').toLowerCase().includes((toolSearch || '').toLowerCase())
+  );
 
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
-  console.log('fetchData chamado');
-  try {
+    console.log('fetchData chamado');
+    try {
       // Fetch user's borrowed tools
       const assignmentsResponse = await apiFetch(`/api/assignments/user/${user.id}`, {
         headers: {
@@ -39,17 +40,17 @@ const TransfersPage = () => {
       });
 
       if (assignmentsResponse.ok) {
-  const assignmentsData = await assignmentsResponse.json();
-  const toolsArr = assignmentsData.confirmed || assignmentsData.tools || [];
-  // Filtra apenas ferramentas emprestadas para o usuário logado
-  const filtered = toolsArr.filter(tool => tool.status === 'Emprestado' && tool.user_id === user.id);
-  setBorrowedTools(filtered);
-  console.log('borrowedTools filtradas:', filtered);
-  if (Array.isArray(filtered)) {
-    filtered.forEach((tool, idx) => {
-      console.log(`Ferramenta[${idx}]:`, tool);
-    });
-  }
+        const assignmentsData = await assignmentsResponse.json();
+        const toolsArr = assignmentsData.confirmed || assignmentsData.tools || [];
+        // Filtra apenas ferramentas emprestadas para o usuário logado
+        const filtered = toolsArr.filter(tool => tool.status === 'Emprestado' && tool.user_id === user.id);
+        setBorrowedTools(filtered);
+        console.log('borrowedTools filtradas:', filtered);
+        if (Array.isArray(filtered)) {
+          filtered.forEach((tool, idx) => {
+            console.log(`Ferramenta[${idx}]:`, tool);
+          });
+        }
       }
 
       // Fetch users
@@ -297,4 +298,3 @@ const TransfersPage = () => {
 };
 
 export default TransfersPage;
-

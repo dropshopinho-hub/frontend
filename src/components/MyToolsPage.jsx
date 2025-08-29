@@ -1,3 +1,5 @@
+// src/pages/MyToolsPage.jsx
+
 import React, { useState, useEffect } from 'react';
 import { apiFetch } from '../lib/api';
 import { Input } from '@/components/ui/input';
@@ -152,7 +154,7 @@ const MyToolsPage = () => {
 
   // Filter and sort pending assignments
   const filteredPendingAssignments = pendingAssignments.filter(a =>
-    a.tool_name.toLowerCase().includes(pendingSearch.toLowerCase()) ||
+    ((a.tool_name || '').toLowerCase().includes((pendingSearch || '').toLowerCase())) ||
     String(a.quantity).includes(pendingSearch) ||
     new Date(a.assigned_at).toLocaleDateString('pt-BR').includes(pendingSearch)
   );
@@ -171,7 +173,7 @@ const MyToolsPage = () => {
 
   // Filter and sort confirmed assignments (borrowed tools)
   const filteredConfirmedAssignments = confirmedAssignments.filter(a =>
-    a.tool_name.toLowerCase().includes(borrowedSearch.toLowerCase()) ||
+    ((a.tool_name || '').toLowerCase().includes((borrowedSearch || '').toLowerCase())) ||
     String(a.quantity).includes(borrowedSearch) ||
     new Date(a.assigned_at).toLocaleDateString('pt-BR').includes(borrowedSearch) ||
     (a.status && a.status.toLowerCase().includes(borrowedSearch.toLowerCase()))
@@ -377,4 +379,3 @@ const MyToolsPage = () => {
 };
 
 export default MyToolsPage;
-

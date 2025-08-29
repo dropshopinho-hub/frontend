@@ -21,14 +21,12 @@ const ToolsPage = () => {
   const [userFilter, setUserFilter] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newTool, setNewTool] = useState({ name: '', quantity: '' });
-  // Estados para edição e exclusão
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [toolToEdit, setToolToEdit] = useState(null);
   const [editQuantity, setEditQuantity] = useState('');
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [toolToDelete, setToolToDelete] = useState(null);
   const [actionError, setActionError] = useState('');
-  // Função para abrir modal de edição
   const [editStatus, setEditStatus] = useState('');
   const openEditDialog = (tool) => {
     setToolToEdit(tool);
@@ -38,7 +36,6 @@ const ToolsPage = () => {
     setActionError('');
   }
 
-  // Função para salvar edição
   const handleEditTool = async (e) => {
     e.preventDefault();
     setActionError('');
@@ -65,14 +62,12 @@ const ToolsPage = () => {
     }
   }
 
-  // Função para abrir confirmação de exclusão
   const openDeleteConfirm = (tool) => {
     setToolToDelete(tool);
     setDeleteConfirmOpen(true);
     setActionError('');
   };
 
-  // Função para deletar ferramenta
   const handleDeleteTool = async () => {
     setActionError('');
     try {
@@ -100,17 +95,17 @@ const ToolsPage = () => {
   }, []);
 
   useEffect(() => {
-    // Filter tools based on search term
+    // Filter tools based on search term (corrigido para evitar erro de undefined)
     let filtered = tools.filter(tool =>
-      tool.tool_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (tool.username && tool.username.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      tool.status.toLowerCase().includes(searchTerm.toLowerCase())
+      (tool.tool_name || '').toLowerCase().includes((searchTerm || '').toLowerCase()) ||
+      (tool.username ? tool.username.toLowerCase().includes((searchTerm || '').toLowerCase()) : false) ||
+      (tool.status || '').toLowerCase().includes((searchTerm || '').toLowerCase())
     );
     if (userFilter && userFilter !== 'todos') {
       filtered = filtered.filter(tool => tool.username === userFilter);
     }
     setFilteredTools(filtered);
-  }, [tools, searchTerm]);
+  }, [tools, searchTerm, userFilter]);
 
   const fetchTools = async () => {
     try {
@@ -282,9 +277,7 @@ const ToolsPage = () => {
         >Baixar Lista</Button>
       </div>
 
-
-
-  {/* Tools Table */}
+      {/* Tools Table */}
       <Card>
         <CardHeader>
           <CardTitle>Lista de Ferramentas</CardTitle>
@@ -381,4 +374,3 @@ const ToolsPage = () => {
 };
 
 export default ToolsPage;
-
