@@ -1,257 +1,90 @@
 import React, { useState, useEffect } from 'react';
-import { apiFetch } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
+import { apiFetch } from '../lib/api';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Plus } from 'lucide-react';
 
 const AssignmentsPage = () => {
-  const [showContactPopup, setShowContactPopup] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
-  const { token, isAdmin } = useAuth();
-
-  useEffect(() => {
-  }, [isAdmin]);
-
-  const [availableTools, setAvailableTools] = useState([]);
-  const [users, setUsers] = useState([]);
+  const { token } = useAuth();
+  const [tools, setTools] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [assignment, setAssignment] = useState({
-    tool_id: '',
-    user_id: '',
-    quantity: '1'
-  });
+  const [showContactPopup, setShowContactPopup] = useState(false);
 
   useEffect(() => {
-    fetchData();
+    fetchTools();
   }, []);
 
-  const fetchData = async () => {
+  const fetchTools = async () => {
+    setLoading(true);
     try {
-      // Fetch available tools
-      const toolsResponse = await apiFetch('/api/tools', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+      const response = await apiFetch('/api/tools', {
+        headers: { 'Authorization': `Bearer ${token}` }
       });
-
-      if (toolsResponse.ok) {
-        const toolsData = await toolsResponse.json();
-        const available = toolsData.tools.filter(tool => tool.status === 'Disponível');
-        setAvailableTools(available);
-      }
-
-      // Fetch users
-      const usersResponse = await apiFetch('/api/users', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (usersResponse.ok) {
-        const usersData = await usersResponse.json();
-        setUsers(usersData.users || []);
+      if (response.ok) {
+        const data = await response.json();
+        setTools(data.tools || []);
       }
     } catch (error) {
-      setError('Erro ao carregar dados');
+      // Trate erros conforme necessário
     } finally {
       setLoading(false);
     }
   };
 
-  const handleAssignment = async (e) => {
-    e.preventDefault();
-    setError('');
-
-    try {
-      const response = await apiFetch('/api/assignments', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          tool_id: assignment.tool_id,
-          user_id: assignment.user_id,
-          quantity: parseInt(assignment.quantity)
-        })
-      });
-
-      if (response.ok) {
-        setAssignment({ tool_id: '', user_id: '', quantity: '1' });
-        setIsDialogOpen(false);
-        setSuccessMessage('Ferramenta atribuída com sucesso!');
-        fetchData();
-        setTimeout(() => setSuccessMessage(''), 4000);
-      } else {
-        const error = await response.json();
-        setError(error.error);
-      }
-    } catch (error) {
-      setError('Erro de conexão');
-    }
-  };
-
-  // Group available tools by name
-  const groupedTools = availableTools.reduce((acc, tool) => {
-    const key = `${tool.name}_${tool.tool_id}`;
-    if (!acc[key]) {
-      acc[key] = {
-        tool_id: tool.tool_id,
-        name: tool.name,
-        available_quantity: 0
-      };
-    }
-    acc[key].available_quantity += tool.quantity;
-    return acc;
-  }, {});
-
-  const toolOptions = Object.values(groupedTools);
-
-  if (loading) {
-    return (
-      <Card>
-        <CardContent className="p-6">
-          <p>Carregando dados...</p>
-        </CardContent>
-      </Card>
-    );
-  }
+  const availableTools = tools.filter(tool => tool.status === 'Disponível');
 
   return (
     <div className="space-y-6">
-      {showContactPopup && (
-        <Dialog open={showContactPopup} onOpenChange={setShowContactPopup}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Atenção</DialogTitle>
-              <DialogDescription>Entre em contato com o Responsável para recusar a atribuição.</DialogDescription>
-            </DialogHeader>
-            <Button variant="outline" onClick={() => setShowContactPopup(false)}>Fechar</Button>
-          </DialogContent>
-        </Dialog>
-      )}
-      {successMessage && (
-        <Alert variant="success">
-          <AlertDescription>{successMessage}</AlertDescription>
-        </Alert>
-      )}
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Atribuições</h2>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="w-4 h-4 mr-2" />
-              Nova Atribuição
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Atribuir Ferramenta</DialogTitle>
-              <DialogDescription>
-                Selecione a ferramenta, quantidade e usuário para atribuição
-              </DialogDescription>
-            </DialogHeader>
-            <form onSubmit={handleAssignment} className="space-y-4">
-              <div>
-                <Label htmlFor="tool-select">Ferramenta</Label>
-                <Select value={assignment.tool_id} onValueChange={(value) => setAssignment({ ...assignment, tool_id: value })}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione uma ferramenta" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {toolOptions.map((tool) => (
-                      <SelectItem key={tool.tool_id} value={tool.tool_id}>
-                        {tool.name} (Disponível: {tool.available_quantity})
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="quantity">Quantidade</Label>
-                <Input
-                  id="quantity"
-                  type="number"
-                  min="1"
-                  max={assignment.tool_id ? groupedTools[`${toolOptions.find(t => t.tool_id === assignment.tool_id)?.name}_${assignment.tool_id}`]?.available_quantity || 1 : 1}
-                  value={assignment.quantity}
-                  onChange={(e) => setAssignment({ ...assignment, quantity: e.target.value })}
-                  required
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="user-select">Usuário</Label>
-                <Select value={assignment.user_id} onValueChange={(value) => setAssignment({ ...assignment, user_id: value })}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione um usuário" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {users.map((user) => (
-                      <SelectItem key={user.id} value={user.id}>
-                        {user.username} ({user.role})
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {error && (
-                <Alert variant="destructive">
-                  <AlertDescription>{error}</AlertDescription>
-                </Alert>
-              )}
-
-              <div className="flex justify-end space-x-2">
-                <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
-                  Cancelar
-                </Button>
-                <Button type="submit">
-                  Atribuir
-                </Button>
-              </div>
-            </form>
-          </DialogContent>
-        </Dialog>
-      </div>
-
       <Card>
         <CardHeader>
-          <CardTitle>Ferramentas Disponíveis para Atribuição</CardTitle>
+          <CardTitle>Ferramentas Disponíveis</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto overflow-y-auto max-h-[60vh]">
-            {toolOptions.length === 0 ? (
-              <p className="text-center text-gray-500 py-8">
-                Nenhuma ferramenta disponível para atribuição
-              </p>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {toolOptions.map((tool) => (
-                  <Card key={tool.tool_id} className="p-4">
-                    <h3 className="font-medium">{tool.name}</h3>
-                    <p className="text-sm text-gray-600">
-                      Quantidade disponível: {tool.available_quantity}
-                    </p>
-                    <Button variant="outline" onClick={() => setShowContactPopup(true)} style={{marginTop: '8px'}}>Recusar</Button>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </div>
+          {loading ? (
+            <p>Carregando ferramentas...</p>
+          ) : availableTools.length === 0 ? (
+            <p className="text-center text-gray-500 py-4">Nenhuma ferramenta disponível</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {availableTools.map(tool => (
+                <div key={tool.id} className="border rounded p-4 shadow">
+                  <h3 className="font-bold text-lg">{tool.name}</h3>
+                  <p>Quantidade: {tool.quantity}</p>
+                  <p className="text-sm text-gray-600">
+                    Status: {tool.status || 'Disponível'}
+                  </p>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setShowContactPopup(true)}
+                  >
+                    Solicitar
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
+      {/* Popup de contato, se necessário */}
+      {showContactPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded shadow-lg">
+            <h2 className="font-bold mb-2">Contato para Solicitação</h2>
+            <p>Entre em contato com o responsável para solicitar a ferramenta.</p>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setShowContactPopup(false)}
+              className="mt-4"
+            >
+              Fechar
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default AssignmentsPage;
+export

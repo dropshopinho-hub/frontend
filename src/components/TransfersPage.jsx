@@ -187,7 +187,7 @@ const TransfersPage = () => {
                             <TableCell>{tool.name || '-'}</TableCell>
                             <TableCell>{tool.quantity}</TableCell>
                             <TableCell>{tool.assigned_at ? new Date(tool.assigned_at).toLocaleDateString('pt-BR') : '-'}</TableCell>
-                            <TableCell>{tool.status || '-'}</TableCell>
+                            <TableCell>{tool.status || 'Disponível'}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -259,7 +259,7 @@ const TransfersPage = () => {
                       </TableCell>
                       <TableCell>
                         <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600">
-                          {tool.status || '-'}
+                          {tool.status || 'Disponível'}
                         </span>
                       </TableCell>
                     </TableRow>

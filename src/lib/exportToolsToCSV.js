@@ -6,7 +6,7 @@ export function exportToolsToCSV(tools, columns, filename = 'ferramentas.csv') {
     'Quantidade': tool.quantity,
     'Usuário': tool.username || '-',
     'Data de Atribuição': tool.assigned_at ? new Date(tool.assigned_at).toLocaleDateString('pt-BR') : '-',
-    'Status': tool.status
+    'Status': tool.status || 'Disponível'
   }));
   const csv = Papa.unparse({ fields: columns, data });
   // Adiciona BOM para garantir acentuação correta no Excel

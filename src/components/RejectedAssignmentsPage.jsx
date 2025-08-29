@@ -81,6 +81,7 @@ const RejectedAssignmentsPage = () => {
                   <TableHead>Nome da Ferramenta</TableHead>
                   <TableHead>Quantidade</TableHead>
                   <TableHead>Usuário que recusou</TableHead>
+                  <TableHead>Status</TableHead>
                   <TableHead>Ações</TableHead>
                 </TableRow>
               </TableHeader>
@@ -90,6 +91,11 @@ const RejectedAssignmentsPage = () => {
                     <TableCell>{item.name}</TableCell>
                     <TableCell>{item.quantity}</TableCell>
                     <TableCell>{item.username}</TableCell>
+                    <TableCell>
+                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-red-50 text-red-600">
+                        {editStatusMap[item.instance_id] || item.status || 'Recusada'}
+                      </span>
+                    </TableCell>
                     <TableCell>
                       <select
                         value={editStatusMap[item.instance_id] || 'Recusada'}
@@ -115,11 +121,4 @@ const RejectedAssignmentsPage = () => {
             <Alert variant="destructive">
               <AlertDescription>{error}</AlertDescription>
             </Alert>
-          )}
-        </CardContent>
-      </Card>
-    </div>
-  );
-};
-
-export default RejectedAssignmentsPage;
+         
