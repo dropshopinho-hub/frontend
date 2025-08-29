@@ -97,7 +97,7 @@ const ToolsPage = () => {
   useEffect(() => {
     // Filter tools based on search term (corrigido para evitar erro de undefined)
     let filtered = tools.filter(tool =>
-      (tool.tool_name || '').toLowerCase().includes((searchTerm || '').toLowerCase()) ||
+      (tool.name || '').toLowerCase().includes((searchTerm || '').toLowerCase()) ||
       (tool.username ? tool.username.toLowerCase().includes((searchTerm || '').toLowerCase()) : false) ||
       (tool.status || '').toLowerCase().includes((searchTerm || '').toLowerCase())
     );
@@ -303,7 +303,7 @@ const ToolsPage = () => {
                 <TableBody>
                   {filteredTools.map((tool, index) => (
                     <TableRow key={index}>
-                      <TableCell className="font-medium">{tool.tool_name}</TableCell>
+                      <TableCell className="font-medium">{tool.name}</TableCell>
                       <TableCell>{tool.quantity}</TableCell>
                       <TableCell>{tool.username || '-'}</TableCell>
                       <TableCell>
@@ -338,7 +338,7 @@ const ToolsPage = () => {
           </DialogHeader>
           <form onSubmit={handleEditTool} className="space-y-4">
             <Label>Nome</Label>
-            <Input value={toolToEdit?.tool_name || ''} disabled />
+            <Input value={toolToEdit?.name || ''} disabled />
             <Label>Quantidade</Label>
             <Input type="number" value={editQuantity} onChange={e => setEditQuantity(e.target.value)} min={1} required />
             <div className="flex gap-2 mt-4">
@@ -355,7 +355,7 @@ const ToolsPage = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Confirmar Exclusão</DialogTitle>
-            <DialogDescription>Tem certeza que deseja excluir a ferramenta "{toolToDelete?.tool_name}"?</DialogDescription>
+            <DialogDescription>Tem certeza que deseja excluir a ferramenta "{toolToDelete?.name}"?</DialogDescription>
           </DialogHeader>
           {actionError && (
             <Alert variant="destructive">

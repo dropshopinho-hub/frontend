@@ -37,7 +37,6 @@ const RejectedAssignmentsPage = () => {
     }
   };
 
-
   const [editStatusMap, setEditStatusMap] = useState({});
 
   const handleStatusChange = (instanceId, value) => {
@@ -88,7 +87,7 @@ const RejectedAssignmentsPage = () => {
               <TableBody>
                 {rejectedAssignments.map(item => (
                   <TableRow key={item.instance_id}>
-                    <TableCell>{item.tool_name}</TableCell>
+                    <TableCell>{item.name}</TableCell>
                     <TableCell>{item.quantity}</TableCell>
                     <TableCell>{item.username}</TableCell>
                     <TableCell>

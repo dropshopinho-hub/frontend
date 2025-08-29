@@ -17,7 +17,7 @@ const ReportsPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [filters, setFilters] = useState({
-    tool_name: '',
+    name: '',
     status: '',
     user_name: ''
   });
@@ -36,7 +36,7 @@ const ReportsPage = () => {
 
     try {
       const queryParams = new URLSearchParams();
-      if (filters.tool_name) queryParams.append('tool_name', filters.tool_name);
+      if (filters.name) queryParams.append('name', filters.name);
       if (filters.status) queryParams.append('status', filters.status);
       if (filters.user_name) queryParams.append('user_name', filters.user_name);
 
@@ -62,9 +62,9 @@ const ReportsPage = () => {
   const applyFilters = () => {
     let filtered = [...reportData];
 
-    if (filters.tool_name) {
+    if (filters.name) {
       filtered = filtered.filter(item =>
-        item.tool_name.toLowerCase().includes(filters.tool_name.toLowerCase())
+        item.name.toLowerCase().includes(filters.name.toLowerCase())
       );
     }
 
@@ -84,7 +84,7 @@ const ReportsPage = () => {
   const handleDownloadPDF = async () => {
     try {
       const queryParams = new URLSearchParams();
-      if (filters.tool_name) queryParams.append('tool_name', filters.tool_name);
+      if (filters.name) queryParams.append('name', filters.name);
       if (filters.status) queryParams.append('status', filters.status);
       if (filters.user_name) queryParams.append('user_name', filters.user_name);
 
@@ -115,7 +115,7 @@ const ReportsPage = () => {
 
   const clearFilters = () => {
     setFilters({
-      tool_name: '',
+      name: '',
       status: '',
       user_name: ''
     });
@@ -177,8 +177,8 @@ const ReportsPage = () => {
               <Input
                 id="tool-name-filter"
                 placeholder="Filtrar por nome..."
-                value={filters.tool_name}
-                onChange={(e) => setFilters({ ...filters, tool_name: e.target.value })}
+                value={filters.name}
+                onChange={(e) => setFilters({ ...filters, name: e.target.value })}
               />
             </div>
             <div>
@@ -253,7 +253,7 @@ const ReportsPage = () => {
                 <TableBody>
                   {filteredData.map((item, index) => (
                     <TableRow key={index}>
-                      <TableCell className="font-medium">{item.tool_name}</TableCell>
+                      <TableCell className="font-medium">{item.name}</TableCell>
                       <TableCell>
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(item.status)}`}>
                           {item.status}
@@ -303,4 +303,3 @@ const ReportsPage = () => {
 };
 
 export default ReportsPage;
-

@@ -22,6 +22,7 @@ const ReturnsTestPage = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState("");
   const [toolQuantities, setToolQuantities] = useState({});
+
   // Buscar usuários para transferência
   useEffect(() => {
     if (!isAdmin && isDialogOpen) {
@@ -157,7 +158,7 @@ const ReturnsTestPage = () => {
   }
 
   const filteredTools = borrowedTools.filter(tool =>
-    (tool.tool_name || '').toLowerCase().includes((search || '').toLowerCase())
+    (tool.name || '').toLowerCase().includes((search || '').toLowerCase())
   );
 
   return (

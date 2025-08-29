@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ArrowRightLeft } from 'lucide-react';
+import { apiFetch } from '../lib/api';
 
 const TransfersPage = () => {
   const { token, user } = useAuth();
@@ -21,8 +22,9 @@ const TransfersPage = () => {
   const [toolSearch, setToolSearch] = useState('');
   const [selectAllTools, setSelectAllTools] = useState(false);
 
+  // Usa tool.name (corrigido)
   const filteredTools = borrowedTools.filter(tool =>
-    (tool.tool_name || '').toLowerCase().includes((toolSearch || '').toLowerCase())
+    (tool.name || '').toLowerCase().includes((toolSearch || '').toLowerCase())
   );
 
   useEffect(() => {
@@ -30,9 +32,8 @@ const TransfersPage = () => {
   }, []);
 
   const fetchData = async () => {
-    console.log('fetchData chamado');
     try {
-      // Fetch user's borrowed tools
+      // Ferramentas emprestadas ao usuário logado
       const assignmentsResponse = await apiFetch(`/api/assignments/user/${user.id}`, {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -42,18 +43,11 @@ const TransfersPage = () => {
       if (assignmentsResponse.ok) {
         const assignmentsData = await assignmentsResponse.json();
         const toolsArr = assignmentsData.confirmed || assignmentsData.tools || [];
-        // Filtra apenas ferramentas emprestadas para o usuário logado
         const filtered = toolsArr.filter(tool => tool.status === 'Emprestado' && tool.user_id === user.id);
         setBorrowedTools(filtered);
-        console.log('borrowedTools filtradas:', filtered);
-        if (Array.isArray(filtered)) {
-          filtered.forEach((tool, idx) => {
-            console.log(`Ferramenta[${idx}]:`, tool);
-          });
-        }
       }
 
-      // Fetch users
+      // Usuários disponíveis para transferência
       const usersResponse = await apiFetch('/api/users', {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -62,7 +56,6 @@ const TransfersPage = () => {
 
       if (usersResponse.ok) {
         const usersData = await usersResponse.json();
-        // Filter out current user
         setUsers((usersData.users || []).filter(u => u.id !== user.id));
       }
     } catch (error) {
@@ -191,10 +184,10 @@ const TransfersPage = () => {
                                 }}
                               />
                             </TableCell>
-                            <TableCell>{tool.tool_name}</TableCell>
+                            <TableCell>{tool.name || '-'}</TableCell>
                             <TableCell>{tool.quantity}</TableCell>
                             <TableCell>{tool.assigned_at ? new Date(tool.assigned_at).toLocaleDateString('pt-BR') : '-'}</TableCell>
-                            <TableCell>{tool.status}</TableCell>
+                            <TableCell>{tool.status || '-'}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -235,7 +228,7 @@ const TransfersPage = () => {
         )}
       </div>
 
-      {/* Borrowed Tools Available for Transfer */}
+      {/* Lista de ferramentas disponíveis */}
       <Card>
         <CardHeader>
           <CardTitle>Ferramentas Disponíveis para Transferência</CardTitle>
@@ -259,14 +252,14 @@ const TransfersPage = () => {
                 <TableBody>
                   {borrowedTools.map((tool) => (
                     <TableRow key={tool.id}>
-                      <TableCell className="font-medium">{tool.tool_name}</TableCell>
+                      <TableCell className="font-medium">{tool.name || '-'}</TableCell>
                       <TableCell>{tool.quantity}</TableCell>
                       <TableCell>
-                        {new Date(tool.assigned_at).toLocaleDateString('pt-BR')}
+                        {tool.assigned_at ? new Date(tool.assigned_at).toLocaleDateString('pt-BR') : '-'}
                       </TableCell>
                       <TableCell>
                         <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600">
-                          {tool.status}
+                          {tool.status || '-'}
                         </span>
                       </TableCell>
                     </TableRow>
@@ -278,7 +271,7 @@ const TransfersPage = () => {
         </CardContent>
       </Card>
 
-      {/* Instructions */}
+      {/* Instruções */}
       <Card>
         <CardHeader>
           <CardTitle>Como Funciona a Transferência</CardTitle>

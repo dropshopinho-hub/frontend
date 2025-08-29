@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 const ReportsPage = () => {
   const { token } = useAuth();
   const [reportData, setReportData] = useState([]);
-  const [filters, setFilters] = useState({ tool_name: '', user_name: '' });
+  const [filters, setFilters] = useState({ name: '', user_name: '' });
 
   useEffect(() => {
     fetchReportData();
@@ -31,7 +31,7 @@ const ReportsPage = () => {
 
   // Filtro seguro usando toLowerCase
   const filteredData = reportData.filter(item => {
-    const toolMatch = (item.tool_name || '').toLowerCase().includes((filters.tool_name || '').toLowerCase());
+    const toolMatch = (item.name || '').toLowerCase().includes((filters.name || '').toLowerCase());
     const userMatch = (item.username || '').toLowerCase().includes((filters.user_name || '').toLowerCase());
     return toolMatch && userMatch;
   });
@@ -46,8 +46,8 @@ const ReportsPage = () => {
           <div className="flex gap-4 mb-4">
             <Input
               placeholder="Filtrar por ferramenta"
-              value={filters.tool_name}
-              onChange={e => setFilters({ ...filters, tool_name: e.target.value })}
+              value={filters.name}
+              onChange={e => setFilters({ ...filters, name: e.target.value })}
             />
             <Input
               placeholder="Filtrar por usuário"
@@ -75,7 +75,7 @@ const ReportsPage = () => {
                 ) : (
                   filteredData.map((item, idx) => (
                     <tr key={idx}>
-                      <td>{item.tool_name}</td>
+                      <td>{item.name}</td>
                       <td>{item.username}</td>
                       <td>{item.quantity}</td>
                       <td>{item.date}</td>

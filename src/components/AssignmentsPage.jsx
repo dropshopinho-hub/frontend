@@ -18,8 +18,6 @@ const AssignmentsPage = () => {
   useEffect(() => {
   }, [isAdmin]);
 
-
-  // ...token e isAdmin já declarados acima...
   const [availableTools, setAvailableTools] = useState([]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,7 +44,6 @@ const AssignmentsPage = () => {
 
       if (toolsResponse.ok) {
         const toolsData = await toolsResponse.json();
-        // Filter only available tools
         const available = toolsData.tools.filter(tool => tool.status === 'Disponível');
         setAvailableTools(available);
       }
@@ -91,7 +88,7 @@ const AssignmentsPage = () => {
         setAssignment({ tool_id: '', user_id: '', quantity: '1' });
         setIsDialogOpen(false);
         setSuccessMessage('Ferramenta atribuída com sucesso!');
-        fetchData(); // Refresh available tools
+        fetchData();
         setTimeout(() => setSuccessMessage(''), 4000);
       } else {
         const error = await response.json();
@@ -104,11 +101,11 @@ const AssignmentsPage = () => {
 
   // Group available tools by name
   const groupedTools = availableTools.reduce((acc, tool) => {
-    const key = `${tool.tool_name}_${tool.tool_id}`;
+    const key = `${tool.name}_${tool.tool_id}`;
     if (!acc[key]) {
       acc[key] = {
         tool_id: tool.tool_id,
-        tool_name: tool.tool_name,
+        name: tool.name,
         available_quantity: 0
       };
     }
@@ -129,23 +126,23 @@ const AssignmentsPage = () => {
   }
 
   return (
-  <div className="space-y-6">
-    {showContactPopup && (
-      <Dialog open={showContactPopup} onOpenChange={setShowContactPopup}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Atenção</DialogTitle>
-            <DialogDescription>Entre em contato com o Responsável para recusar a atribuição.</DialogDescription>
-          </DialogHeader>
-          <Button variant="outline" onClick={() => setShowContactPopup(false)}>Fechar</Button>
-        </DialogContent>
-      </Dialog>
-    )}
-    {successMessage && (
-      <Alert variant="success">
-        <AlertDescription>{successMessage}</AlertDescription>
-      </Alert>
-    )}
+    <div className="space-y-6">
+      {showContactPopup && (
+        <Dialog open={showContactPopup} onOpenChange={setShowContactPopup}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Atenção</DialogTitle>
+              <DialogDescription>Entre em contato com o Responsável para recusar a atribuição.</DialogDescription>
+            </DialogHeader>
+            <Button variant="outline" onClick={() => setShowContactPopup(false)}>Fechar</Button>
+          </DialogContent>
+        </Dialog>
+      )}
+      {successMessage && (
+        <Alert variant="success">
+          <AlertDescription>{successMessage}</AlertDescription>
+        </Alert>
+      )}
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Atribuições</h2>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -172,20 +169,20 @@ const AssignmentsPage = () => {
                   <SelectContent>
                     {toolOptions.map((tool) => (
                       <SelectItem key={tool.tool_id} value={tool.tool_id}>
-                        {tool.tool_name} (Disponível: {tool.available_quantity})
+                        {tool.name} (Disponível: {tool.available_quantity})
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
-              
+
               <div>
                 <Label htmlFor="quantity">Quantidade</Label>
                 <Input
                   id="quantity"
                   type="number"
                   min="1"
-                  max={assignment.tool_id ? groupedTools[`${toolOptions.find(t => t.tool_id === assignment.tool_id)?.tool_name}_${assignment.tool_id}`]?.available_quantity || 1 : 1}
+                  max={assignment.tool_id ? groupedTools[`${toolOptions.find(t => t.tool_id === assignment.tool_id)?.name}_${assignment.tool_id}`]?.available_quantity || 1 : 1}
                   value={assignment.quantity}
                   onChange={(e) => setAssignment({ ...assignment, quantity: e.target.value })}
                   required
@@ -227,7 +224,6 @@ const AssignmentsPage = () => {
         </Dialog>
       </div>
 
-      {/* Available Tools Summary */}
       <Card>
         <CardHeader>
           <CardTitle>Ferramentas Disponíveis para Atribuição</CardTitle>
@@ -242,7 +238,7 @@ const AssignmentsPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {toolOptions.map((tool) => (
                   <Card key={tool.tool_id} className="p-4">
-                    <h3 className="font-medium">{tool.tool_name}</h3>
+                    <h3 className="font-medium">{tool.name}</h3>
                     <p className="text-sm text-gray-600">
                       Quantidade disponível: {tool.available_quantity}
                     </p>
@@ -259,4 +255,3 @@ const AssignmentsPage = () => {
 };
 
 export default AssignmentsPage;
-

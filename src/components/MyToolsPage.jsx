@@ -154,7 +154,7 @@ const MyToolsPage = () => {
 
   // Filter and sort pending assignments
   const filteredPendingAssignments = pendingAssignments.filter(a =>
-    ((a.tool_name || '').toLowerCase().includes((pendingSearch || '').toLowerCase())) ||
+    ((a.name || '').toLowerCase().includes((pendingSearch || '').toLowerCase())) ||
     String(a.quantity).includes(pendingSearch) ||
     new Date(a.assigned_at).toLocaleDateString('pt-BR').includes(pendingSearch)
   );
@@ -173,7 +173,7 @@ const MyToolsPage = () => {
 
   // Filter and sort confirmed assignments (borrowed tools)
   const filteredConfirmedAssignments = confirmedAssignments.filter(a =>
-    ((a.tool_name || '').toLowerCase().includes((borrowedSearch || '').toLowerCase())) ||
+    ((a.name || '').toLowerCase().includes((borrowedSearch || '').toLowerCase())) ||
     String(a.quantity).includes(borrowedSearch) ||
     new Date(a.assigned_at).toLocaleDateString('pt-BR').includes(borrowedSearch) ||
     (a.status && a.status.toLowerCase().includes(borrowedSearch.toLowerCase()))
@@ -229,7 +229,7 @@ const MyToolsPage = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead onClick={() => handleSort('tool_name')} style={{ cursor: 'pointer' }}>Ferramenta</TableHead>
+                    <TableHead onClick={() => handleSort('name')} style={{ cursor: 'pointer' }}>Ferramenta</TableHead>
                     <TableHead onClick={() => handleSort('quantity')} style={{ cursor: 'pointer' }}>Quantidade</TableHead>
                     <TableHead onClick={() => handleSort('assigned_at')} style={{ cursor: 'pointer' }}>Data de Atribuição</TableHead>
                     <TableHead>Ações</TableHead>
@@ -238,7 +238,7 @@ const MyToolsPage = () => {
                 <TableBody>
                   {sortedPendingAssignments.map((assignment) => (
                     <TableRow key={assignment.id}>
-                      <TableCell className="font-medium">{assignment.tool_name}</TableCell>
+                      <TableCell className="font-medium">{assignment.name}</TableCell>
                       <TableCell>{assignment.quantity}</TableCell>
                       <TableCell>
                         {new Date(assignment.assigned_at).toLocaleDateString('pt-BR')}
@@ -291,7 +291,7 @@ const MyToolsPage = () => {
                 <TableBody>
                   {pendingTransfers.map((transfer) => (
                     <TableRow key={transfer.id}>
-                      <TableCell className="font-medium">{transfer.tool_name}</TableCell>
+                      <TableCell className="font-medium">{transfer.name}</TableCell>
                       <TableCell>{transfer.quantity}</TableCell>
                       <TableCell>
                         {new Date(transfer.transfer_initiated_at).toLocaleDateString('pt-BR')}
@@ -347,7 +347,7 @@ const MyToolsPage = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead onClick={() => handleSort('tool_name')} style={{ cursor: 'pointer' }}>Ferramenta</TableHead>
+                    <TableHead onClick={() => handleSort('name')} style={{ cursor: 'pointer' }}>Ferramenta</TableHead>
                     <TableHead onClick={() => handleSort('quantity')} style={{ cursor: 'pointer' }}>Quantidade</TableHead>
                     <TableHead onClick={() => handleSort('assigned_at')} style={{ cursor: 'pointer' }}>Data de Confirmação</TableHead>
                     <TableHead onClick={() => handleSort('status')} style={{ cursor: 'pointer' }}>Status</TableHead>
@@ -356,7 +356,7 @@ const MyToolsPage = () => {
                 <TableBody>
                   {sortedConfirmedAssignments.map((assignment) => (
                     <TableRow key={assignment.id}>
-                      <TableCell className="font-medium">{assignment.tool_name}</TableCell>
+                      <TableCell className="font-medium">{assignment.name}</TableCell>
                       <TableCell>{assignment.quantity}</TableCell>
                       <TableCell>
                         {new Date(assignment.assigned_at).toLocaleDateString('pt-BR')}

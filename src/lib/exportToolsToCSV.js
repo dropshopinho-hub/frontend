@@ -2,7 +2,7 @@ import Papa from 'papaparse';
 
 export function exportToolsToCSV(tools, columns, filename = 'ferramentas.csv') {
   const data = tools.map(tool => ({
-    'Nome da Ferramenta': tool.tool_name,
+    'Nome da Ferramenta': tool.name,
     'Quantidade': tool.quantity,
     'Usuário': tool.username || '-',
     'Data de Atribuição': tool.assigned_at ? new Date(tool.assigned_at).toLocaleDateString('pt-BR') : '-',
