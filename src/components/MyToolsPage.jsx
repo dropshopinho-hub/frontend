@@ -25,6 +25,7 @@ const MyToolsPage = () => {
   useEffect(() => {
     fetchAssignments();
     fetchPendingTransfers();
+    // eslint-disable-next-line
   }, []);
 
   const fetchAssignments = async () => {
@@ -154,9 +155,9 @@ const MyToolsPage = () => {
 
   // Filter and sort pending assignments
   const filteredPendingAssignments = pendingAssignments.filter(a =>
-    (a.name || '').toLowerCase().includes((pendingSearch || '').toLowerCase())
-    String(a.quantity).includes(pendingSearch) ||
-    new Date(a.assigned_at).toLocaleDateString('pt-BR').includes(pendingSearch)
+    ((a.name || '').toLowerCase().includes((pendingSearch || '').toLowerCase()) ||
+      String(a.quantity).includes(pendingSearch) ||
+      new Date(a.assigned_at).toLocaleDateString('pt-BR').includes(pendingSearch))
   );
   const sortedPendingAssignments = [...filteredPendingAssignments].sort((a, b) => {
     if (!sortConfig.key) return 0;
@@ -173,10 +174,10 @@ const MyToolsPage = () => {
 
   // Filter and sort confirmed assignments (borrowed tools)
   const filteredConfirmedAssignments = confirmedAssignments.filter(a =>
-    (a.status || '').toLowerCase().includes((borrowedSearch || '').toLowerCase())
-    String(a.quantity).includes(borrowedSearch) ||
-    new Date(a.assigned_at).toLocaleDateString('pt-BR').includes(borrowedSearch) ||
-    (a.name || '').toLowerCase().includes((borrowedSearch || '').toLowerCase())
+    ((a.status || '').toLowerCase().includes((borrowedSearch || '').toLowerCase()) ||
+      String(a.quantity).includes(borrowedSearch) ||
+      new Date(a.assigned_at).toLocaleDateString('pt-BR').includes(borrowedSearch) ||
+      (a.name || '').toLowerCase().includes((borrowedSearch || '').toLowerCase()))
   );
   const sortedConfirmedAssignments = [...filteredConfirmedAssignments].sort((a, b) => {
     if (!sortConfig.key) return 0;
