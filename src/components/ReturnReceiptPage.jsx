@@ -30,14 +30,29 @@ const ReturnReceiptPage = () => {
       setLoading(true);
       setError('');
       
+      console.log('Fetching pending returns...');
+      console.log('User:', user);
+      console.log('Token:', token ? 'Present' : 'Missing');
+      
       const response = await apiFetch('/api/returns/pending');
+      
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
       
       if (response.ok) {
         const data = await response.json();
+        console.log('Pending returns data:', data);
         setPendingReturns(data);
       } else {
-        const errorData = await response.json();
-        setError(errorData.error || 'Erro ao carregar devoluções pendentes');
+        console.log('Error response:', response);
+        try {
+          const errorData = await response.json();
+          console.log('Error data:', errorData);
+          setError(errorData.error || 'Erro ao carregar devoluções pendentes');
+        } catch (parseError) {
+          console.log('Could not parse error response as JSON');
+          setError(`Erro ${response.status}: ${response.statusText}`);
+        }
       }
     } catch (err) {
       console.error('Error fetching pending returns:', err);
