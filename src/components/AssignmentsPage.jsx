@@ -18,21 +18,22 @@ const AssignmentsPage = ({ token }) => {
 
   // Busca instâncias disponíveis
   const fetchTools = async () => {
-    setLoading(true);
-    try {
-      const response = await apiFetch("/api/tool_instance?status=Disponível", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setTools(data || []);
-      }
-    } catch (error) {
-      setTools([]);
-    } finally {
-      setLoading(false);
+  setLoading(true);
+  try {
+    // Altere o endpoint para buscar instâncias disponíveis corretamente
+    const response = await apiFetch("/api/tools/instances?status=Disponível", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (response.ok) {
+      const data = await response.json();
+      setTools(data || []);
     }
-  };
+  } catch (error) {
+    setTools([]);
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Busca nomes das ferramentas
   const fetchToolNames = async () => {
