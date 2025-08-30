@@ -16,9 +16,16 @@ const DashboardToolsStatus = () => {
     setLoading(true);
     setError('');
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setError('Token de autenticação não encontrado');
+        setLoading(false);
+        return;
+      }
+
       const response = await apiFetch('/api/tools', {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${token}`
         }
       });
       if (response.ok) {
@@ -30,6 +37,8 @@ const DashboardToolsStatus = () => {
           summary[tool.status] += tool.quantity;
         });
         setStatusSummary(Object.entries(summary));
+      } else if (response.status === 403) {
+        setError('Acesso negado - apenas administradores podem ver este dashboard');
       } else {
         setError('Erro ao carregar dados das ferramentas');
       }
