@@ -9,6 +9,7 @@ const AssignmentsPage = ({ token }) => {
   const [quantity, setQuantity] = useState(1);
   const [selectedUserId, setSelectedUserId] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
     fetchTools();
@@ -18,22 +19,25 @@ const AssignmentsPage = ({ token }) => {
 
   // Busca instâncias disponíveis
   const fetchTools = async () => {
-  setLoading(true);
-  try {
-    // Altere o endpoint para buscar instâncias disponíveis corretamente
-    const response = await apiFetch("/api/tools/instances?status=Disponível", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (response.ok) {
-      const data = await response.json();
-      setTools(data || []);
+    setLoading(true);
+    try {
+      // Use o endpoint correto do backend
+      const response = await apiFetch("/api/tools/instances?status=Disponível", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Ferramentas disponíveis:", data); // Ajuda a depurar
+        setTools(data.tools || []); // <-- Corrigido aqui!
+      } else {
+        setTools([]);
+      }
+    } catch (error) {
+      setTools([]);
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    setTools([]);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   // Busca nomes das ferramentas
   const fetchToolNames = async () => {
@@ -45,7 +49,7 @@ const AssignmentsPage = ({ token }) => {
         const data = await response.json();
         // Cria um mapa tool_id => name
         const namesMap = {};
-        (data || []).forEach((tool) => {
+        (data.tools || []).forEach((tool) => {
           namesMap[tool.id] = tool.name;
         });
         setToolNames(namesMap);
@@ -72,7 +76,11 @@ const AssignmentsPage = ({ token }) => {
 
   // Realiza atribuição
   const handleAssign = async () => {
-    if (!selectedToolId || !selectedUserId || !quantity) return;
+    if (!selectedToolId || !selectedUserId || !quantity) {
+      setErrorMsg("Selecione ferramenta, usuário e quantidade.");
+      return;
+    }
+    setErrorMsg("");
     setLoading(true);
     try {
       const response = await apiFetch("/api/assignments", {
@@ -111,8 +119,8 @@ const AssignmentsPage = ({ token }) => {
         >
           <option value="">Selecione uma ferramenta</option>
           {tools.map((tool) => (
-            <option key={tool.id} value={tool.tool_id}>
-              {toolNames[tool.tool_id] || tool.tool_id}
+            <option key={tool.id} value={tool.id}>
+              {toolNames[tool.id] || tool.name}
             </option>
           ))}
         </select>
@@ -140,6 +148,7 @@ const AssignmentsPage = ({ token }) => {
           ))}
         </select>
       </div>
+      {errorMsg && <div style={{ color: "red" }}>{errorMsg}</div>}
       <button onClick={handleAssign} disabled={loading}>
         {loading ? "Atribuindo..." : "Atribuir"}
       </button>
