@@ -18,13 +18,13 @@ const AssignmentsPage = () => {
   useEffect(() => {
   }, [isAdmin]);
 
-
   // ...token e isAdmin já declarados acima...
   const [availableTools, setAvailableTools] = useState([]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [toolSearchTerm, setToolSearchTerm] = useState('');
   const [assignment, setAssignment] = useState({
     tool_id: '',
     user_id: '',
@@ -116,7 +116,10 @@ const AssignmentsPage = () => {
     return acc;
   }, {});
 
-  const toolOptions = Object.values(groupedTools);
+  // Filter tools based on search term
+  const filteredToolOptions = Object.values(groupedTools).filter(tool =>
+    tool.tool_name.toLowerCase().includes(toolSearchTerm.toLowerCase())
+  );
 
   if (loading) {
     return (
@@ -164,13 +167,24 @@ const AssignmentsPage = () => {
             </DialogHeader>
             <form onSubmit={handleAssignment} className="space-y-4">
               <div>
+                <Label htmlFor="tool-search">Pesquisar Ferramenta</Label>
+                <Input
+                  id="tool-search"
+                  placeholder="Digite o nome da ferramenta..."
+                  value={toolSearchTerm}
+                  onChange={(e) => setToolSearchTerm(e.target.value)}
+                  className="mb-2"
+                />
+              </div>
+              
+              <div>
                 <Label htmlFor="tool-select">Ferramenta</Label>
                 <Select value={assignment.tool_id} onValueChange={(value) => setAssignment({ ...assignment, tool_id: value })}>
                   <SelectTrigger>
                     <SelectValue placeholder="Selecione uma ferramenta" />
                   </SelectTrigger>
                   <SelectContent>
-                    {toolOptions.map((tool) => (
+                    {filteredToolOptions.map((tool) => (
                       <SelectItem key={tool.tool_id} value={tool.tool_id}>
                         {tool.tool_name} (Disponível: {tool.available_quantity})
                       </SelectItem>
@@ -185,7 +199,7 @@ const AssignmentsPage = () => {
                   id="quantity"
                   type="number"
                   min="1"
-                  max={assignment.tool_id ? groupedTools[`${toolOptions.find(t => t.tool_id === assignment.tool_id)?.tool_name}_${assignment.tool_id}`]?.available_quantity || 1 : 1}
+                  max={assignment.tool_id ? groupedTools[`${filteredToolOptions.find(t => t.tool_id === assignment.tool_id)?.tool_name}_${assignment.tool_id}`]?.available_quantity || 1 : 1}
                   value={assignment.quantity}
                   onChange={(e) => setAssignment({ ...assignment, quantity: e.target.value })}
                   required
