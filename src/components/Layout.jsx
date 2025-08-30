@@ -2,7 +2,7 @@ import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { LogOut, Settings, Users, Package, ArrowRightLeft, RotateCcw, FileText } from 'lucide-react';
+import { LogOut, Settings, Users, Package, ArrowRightLeft, RotateCcw, FileText, CheckCircle } from 'lucide-react';
 
 const Layout = ({ children, currentPage, setCurrentPage }) => {
   const { user, logout, isAdmin } = useAuth();
@@ -14,6 +14,7 @@ const Layout = ({ children, currentPage, setCurrentPage }) => {
   // { id: 'rejected-assignments', label: 'Atribuições Recusadas', icon: FileText, adminOnly: true },
   { id: 'my-tools', label: 'Minhas Ferramentas', icon: Settings, adminOnly: false },
   { id: 'returns', label: 'Devoluções', icon: RotateCcw, adminOnly: false },
+  { id: 'return-receipt', label: 'Recebimento', icon: CheckCircle, adminOnly: true },
   { id: 'returns-test', label: 'Transferência GP', icon: RotateCcw, adminOnly: false },
   // { id: 'reports', label: 'Relatórios', icon: FileText, adminOnly: true },
   { id: 'user-register', label: 'Cadastrar Usuário', icon: Users, adminOnly: true },

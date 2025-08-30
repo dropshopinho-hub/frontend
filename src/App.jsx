@@ -8,6 +8,7 @@ import MyToolsPage from './components/MyToolsPage';
 import TransfersPage from './components/TransfersPage';
 import ReturnsPage from './components/ReturnsPage';
 import ReturnsTestPage from './components/ReturnsTestPage';
+import ReturnReceiptPage from './components/ReturnReceiptPage';
 import ReportsPage from './components/ReportsPage';
 import DashboardToolsStatus from './components/DashboardToolsStatus';
 // import RejectedAssignmentsPage from './components/RejectedAssignmentsPage';
@@ -47,6 +48,8 @@ const AppContent = () => {
         return <ReturnsPage />;
       case 'returns-test':
         return <TransfersPage />;
+      case 'return-receipt':
+        return <ReturnReceiptPage />;
       case 'reports':
         return <ReportsPage />;
       case 'user-register':
