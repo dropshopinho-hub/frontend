@@ -28,13 +28,14 @@ const ToolsPage = () => {
   const [toolToDelete, setToolToDelete] = useState(null);
   const [actionError, setActionError] = useState('');
   const [editStatus, setEditStatus] = useState('');
+
   const openEditDialog = (tool) => {
     setToolToEdit(tool);
     setEditQuantity(tool.quantity);
     setEditStatus(tool.status);
     setEditDialogOpen(true);
     setActionError('');
-  }
+  };
 
   const handleEditTool = async (e) => {
     e.preventDefault();
@@ -60,7 +61,7 @@ const ToolsPage = () => {
     } catch (err) {
       setActionError('Erro de conexão');
     }
-  }
+  };
 
   const openDeleteConfirm = (tool) => {
     setToolToDelete(tool);
@@ -92,12 +93,13 @@ const ToolsPage = () => {
 
   useEffect(() => {
     fetchTools();
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
     let filtered = tools.filter(tool =>
-      (tool.name || '').toLowerCase().includes((searchTerm || '').toLowerCase())
-      (tool.username || '').toLowerCase().includes((searchTerm || '').toLowerCase())
+      (tool.name || '').toLowerCase().includes((searchTerm || '').toLowerCase()) ||
+      (tool.username || '').toLowerCase().includes((searchTerm || '').toLowerCase()) ||
       (tool.status || '').toLowerCase().includes((searchTerm || '').toLowerCase())
     );
     if (userFilter && userFilter !== 'todos') {
@@ -142,7 +144,7 @@ const ToolsPage = () => {
         body: JSON.stringify({
           name: newTool.name,
           quantity: parseInt(newTool.quantity),
-          status: "Disponível" // <-- Adicionado aqui!
+          status: "Disponível"
         })
       });
 
@@ -278,7 +280,7 @@ const ToolsPage = () => {
         >Baixar Lista</Button>
       </div>
 
-      {/* Tools Table */}
+      {/* Tabela de Ferramentas */}
       <Card>
         <CardHeader>
           <CardTitle>Lista de Ferramentas</CardTitle>
@@ -369,7 +371,8 @@ const ToolsPage = () => {
           </div>
         </DialogContent>
       </Dialog>
-
     </div>
   );
 };
+
+export default ToolsPage;
