@@ -255,13 +255,13 @@ const AssignmentsPage = () => {
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto overflow-y-auto max-h-[60vh]">
-            {toolOptions.length === 0 ? (
+            {filteredToolOptions.length === 0 ? (
               <p className="text-center text-gray-500 py-8">
                 Nenhuma ferramenta disponível para atribuição
               </p>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {toolOptions.map((tool) => (
+                {filteredToolOptions.map((tool) => (
                   <Card key={tool.tool_id} className="p-4">
                     <h3 className="font-medium">{tool.tool_name}</h3>
                     <p className="text-sm text-gray-600">
