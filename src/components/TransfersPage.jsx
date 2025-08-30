@@ -33,6 +33,9 @@ const TransfersPage = () => {
 
   const fetchData = async () => {
     try {
+      console.log('Current user:', user);
+      console.log('Fetching assignments for user ID:', user.id);
+      
       // Ferramentas emprestadas ao usuário logado
       const assignmentsResponse = await apiFetch(`/api/assignments/user/${user.id}`, {
         headers: {
@@ -43,9 +46,12 @@ const TransfersPage = () => {
       if (assignmentsResponse.ok) {
         const assignmentsData = await assignmentsResponse.json();
         const toolsArr = assignmentsData.confirmed || [];
+        console.log('Confirmed assignments:', toolsArr);
         setBorrowedTools(toolsArr);
       } else {
         console.error('Error fetching assignments:', assignmentsResponse.status);
+        const errorData = await assignmentsResponse.json();
+        console.error('Error details:', errorData);
       }
 
       // Usuários disponíveis para transferência
@@ -237,9 +243,10 @@ const TransfersPage = () => {
         <CardContent>
           <div className="overflow-x-auto overflow-y-auto max-h-[40vh]">
             {borrowedTools.length === 0 ? (
-              <p className="text-center text-gray-500 py-8">
-                Você não possui ferramentas emprestadas para transferir
-              </p>
+              <div className="text-center text-gray-500 py-8">
+                <p>Você não possui ferramentas emprestadas para transferir</p>
+                <p className="text-sm mt-2">Para transferir ferramentas, você precisa primeiro ter ferramentas confirmadas em "Minhas Ferramentas"</p>
+              </div>
             ) : (
               <Table>
                 <TableHeader>
