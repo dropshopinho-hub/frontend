@@ -51,7 +51,7 @@ const ReturnsPage = () => {
       setError('');
       setSuccess('');
       
-      const response = await apiFetch(`/api/tools/return/${toolInstance.id}`, {
+      const response = await apiFetch(`/api/returns/tools/return/${toolInstance.id}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
