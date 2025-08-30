@@ -126,18 +126,17 @@ const TransfersPage = () => {
     }
   };
 
+  console.log('TransfersPage render - borrowedTools:', borrowedTools);
+  console.log('TransfersPage render - loading:', loading);
+  console.log('TransfersPage render - users:', users);
+
   if (loading) {
-    return (
-      <Card>
-        <CardContent className="p-6">
-          <p>Carregando dados...</p>
-        </CardContent>
-      </Card>
-    );
+    return <div className="flex justify-center items-center h-64">Carregando...</div>;
   }
 
   return (
     <div className="space-y-6">
+
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Transferências</h2>
         {borrowedTools.length > 0 && (
