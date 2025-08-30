@@ -13,7 +13,7 @@ const ReturnReceiptPage = () => {
   const { user, token } = useAuth();
 
   const apiFetch = async (url, options = {}) => {
-    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+    const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
     const response = await fetch(`${API_BASE_URL}${url}`, {
       ...options,
       headers: {
