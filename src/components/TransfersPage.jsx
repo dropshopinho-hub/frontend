@@ -46,12 +46,18 @@ const TransfersPage = () => {
       if (assignmentsResponse.ok) {
         const assignmentsData = await assignmentsResponse.json();
         const toolsArr = assignmentsData.confirmed || [];
+        console.log('Response data:', assignmentsData);
         console.log('Confirmed assignments:', toolsArr);
+        console.log('Setting borrowed tools:', toolsArr.length, 'items');
         setBorrowedTools(toolsArr);
       } else {
         console.error('Error fetching assignments:', assignmentsResponse.status);
-        const errorData = await assignmentsResponse.json();
-        console.error('Error details:', errorData);
+        try {
+          const errorData = await assignmentsResponse.json();
+          console.error('Error details:', errorData);
+        } catch (e) {
+          console.error('Could not parse error response');
+        }
       }
 
       // Usuários disponíveis para transferência
@@ -63,10 +69,22 @@ const TransfersPage = () => {
 
       if (usersResponse.ok) {
         const usersData = await usersResponse.json();
-        setUsers((usersData.users || []).filter(u => u.id !== user.id));
+        console.log('Users data:', usersData);
+        const filteredUsers = usersData.filter(u => u.id !== user.id);
+        console.log('Filtered users (excluding self):', filteredUsers);
+        setUsers(filteredUsers);
+      } else {
+        console.error('Error fetching users:', usersResponse.status);
+        try {
+          const errorData = await usersResponse.json();
+          console.error('Users error details:', errorData);
+        } catch (e) {
+          console.error('Could not parse users error response');
+        }
       }
     } catch (error) {
       setError('Erro ao carregar dados');
+      console.error('Fetch data error:', error);
     } finally {
       setLoading(false);
     }
