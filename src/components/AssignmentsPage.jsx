@@ -60,7 +60,8 @@ const AssignmentsPage = () => {
 
       if (usersResponse.ok) {
         const usersData = await usersResponse.json();
-        setUsers(usersData.users || []);
+        console.log('Users data in AssignmentsPage:', usersData);
+        setUsers(usersData || []);
       }
     } catch (error) {
       setError('Erro ao carregar dados');
