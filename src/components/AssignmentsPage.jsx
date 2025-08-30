@@ -121,6 +121,13 @@ const AssignmentsPage = () => {
     tool.tool_name.toLowerCase().includes(toolSearchTerm.toLowerCase())
   );
 
+  // Get max quantity for selected tool
+  const getMaxQuantity = () => {
+    if (!assignment.tool_id) return 1;
+    const selectedTool = filteredToolOptions.find(t => t.tool_id === assignment.tool_id);
+    return selectedTool ? selectedTool.available_quantity : 1;
+  };
+
   if (loading) {
     return (
       <Card>
@@ -199,7 +206,7 @@ const AssignmentsPage = () => {
                   id="quantity"
                   type="number"
                   min="1"
-                  max={assignment.tool_id ? groupedTools[`${filteredToolOptions.find(t => t.tool_id === assignment.tool_id)?.tool_name}_${assignment.tool_id}`]?.available_quantity || 1 : 1}
+                  max={getMaxQuantity()}
                   value={assignment.quantity}
                   onChange={(e) => setAssignment({ ...assignment, quantity: e.target.value })}
                   required
