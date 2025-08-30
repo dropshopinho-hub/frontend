@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import apiFetch from "../utils/apiFetch"; // ajuste o caminho se necessário
+// Corrija o import abaixo conforme o local correto do seu apiFetch!
+import { apiFetch } from "../lib/api"; // <-- ajuste aqui se necessário
 
 const AssignmentsPage = ({ token }) => {
   const [tools, setTools] = useState([]);
@@ -15,20 +16,19 @@ const AssignmentsPage = ({ token }) => {
     fetchTools();
     fetchToolNames();
     fetchUsers();
+    // eslint-disable-next-line
   }, []);
 
   // Busca instâncias disponíveis
   const fetchTools = async () => {
     setLoading(true);
     try {
-      // Use o endpoint correto do backend
       const response = await apiFetch("/api/tools/instances?status=Disponível", {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.ok) {
         const data = await response.json();
-        console.log("Ferramentas disponíveis:", data); // Ajuda a depurar
-        setTools(data.tools || []); // <-- Corrigido aqui!
+        setTools(data.tools || []);
       } else {
         setTools([]);
       }
@@ -47,7 +47,6 @@ const AssignmentsPage = ({ token }) => {
       });
       if (response.ok) {
         const data = await response.json();
-        // Cria um mapa tool_id => name
         const namesMap = {};
         (data.tools || []).forEach((tool) => {
           namesMap[tool.id] = tool.name;
@@ -97,7 +96,7 @@ const AssignmentsPage = ({ token }) => {
       });
       if (response.ok) {
         alert("Atribuição realizada com sucesso!");
-        fetchTools(); // Atualiza lista após atribuição
+        fetchTools();
       } else {
         alert("Erro ao atribuir ferramenta.");
       }
