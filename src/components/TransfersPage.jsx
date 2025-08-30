@@ -42,9 +42,10 @@ const TransfersPage = () => {
 
       if (assignmentsResponse.ok) {
         const assignmentsData = await assignmentsResponse.json();
-        const toolsArr = assignmentsData.confirmed || assignmentsData.tools || [];
-        const filtered = toolsArr.filter(tool => tool.status === 'Emprestado' && tool.user_id === user.id);
-        setBorrowedTools(filtered);
+        const toolsArr = assignmentsData.confirmed || [];
+        setBorrowedTools(toolsArr);
+      } else {
+        console.error('Error fetching assignments:', assignmentsResponse.status);
       }
 
       // Usuários disponíveis para transferência
