@@ -24,7 +24,8 @@ export default function UserAdminList() {
       });
       if (response.ok) {
         const data = await response.json();
-        setUsers(data.users || []);
+        console.log('Users data received:', data);
+        setUsers(data || []);
       } else {
         setError('Erro ao carregar usuários');
       }
