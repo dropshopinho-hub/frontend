@@ -46,7 +46,7 @@ const AppContent = () => {
       case 'returns':
         return <ReturnsPage />;
       case 'returns-test':
-        return <ReturnsTestPage />;
+        return <TransfersPage />;
       case 'reports':
         return <ReportsPage />;
       case 'user-register':
