@@ -8,6 +8,7 @@ Sistema de gestão de ferramentas desenvolvido com React (frontend) e Flask (bac
 
 ## Como compartilhar e instalar em outro computador
 
+### 1. Pré-requisitos
 - Python 3.11 ou superior
 - Node.js (recomendado versão 18 ou superior)
 - pnpm (gerenciador de pacotes Node.js)
