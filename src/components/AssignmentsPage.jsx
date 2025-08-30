@@ -38,7 +38,7 @@ const AssignmentsPage = () => {
   const fetchData = async () => {
     try {
       // Fetch available tools
-      const toolsResponse = await apiFetch('/api/tools', {
+      const toolsResponse = await apiFetch('/api/tools/instances', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
