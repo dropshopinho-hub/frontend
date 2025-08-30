@@ -28,13 +28,22 @@ const TransfersPage = () => {
   );
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (user && token) {
+      fetchData();
+    }
+  }, [user, token]);
 
   const fetchData = async () => {
     try {
       console.log('Current user:', user);
+      console.log('Token:', token ? 'Present' : 'Missing');
       console.log('Fetching assignments for user ID:', user.id);
+      
+      if (!token) {
+        setError('Token de autenticação não encontrado');
+        setLoading(false);
+        return;
+      }
       
       // Ferramentas emprestadas ao usuário logado
       const assignmentsResponse = await apiFetch(`/api/assignments/user/${user.id}`, {
@@ -61,6 +70,7 @@ const TransfersPage = () => {
       }
 
       // Usuários disponíveis para transferência
+      console.log('Fetching users...');
       const usersResponse = await apiFetch('/api/users', {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -129,9 +139,28 @@ const TransfersPage = () => {
   console.log('TransfersPage render - borrowedTools:', borrowedTools);
   console.log('TransfersPage render - loading:', loading);
   console.log('TransfersPage render - users:', users);
+  console.log('TransfersPage render - user:', user);
+  console.log('TransfersPage render - token:', token ? 'Present' : 'Missing');
 
   if (loading) {
     return <div className="flex justify-center items-center h-64">Carregando...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-center">
+          <p className="text-red-600 mb-2">{error}</p>
+          <Button onClick={() => {
+            setError('');
+            setLoading(true);
+            fetchData();
+          }}>
+            Tentar Novamente
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   return (
