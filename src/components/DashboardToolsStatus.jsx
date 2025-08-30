@@ -73,7 +73,8 @@ const DashboardToolsStatus = () => {
                 return (
                   <div key={status} className={`flex flex-col items-center p-3 rounded-lg shadow ${bg}`} style={{ minHeight: 100 }}>
                     {icon}
-                    <h3 className={`text-base mb-1 ${color}`}>{status}</h3>
+                    <h3 className={`text-base mb-1 ${color}`}>{status || 'Disponível'}
+</h3>
                     <p className="text-xl mt-1">{quantity}</p>
                   </div>
                 );

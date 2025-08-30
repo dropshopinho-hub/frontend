@@ -64,7 +64,7 @@ const ReportsPage = () => {
 
     if (filters.name) {
       filtered = filtered.filter(item =>
-        item.name.toLowerCase().includes(filters.name.toLowerCase())
+        (item.name || '').toLowerCase().includes((filters.name || '').toLowerCase())
       );
     }
 
@@ -74,7 +74,7 @@ const ReportsPage = () => {
 
     if (filters.user_name) {
       filtered = filtered.filter(item =>
-        item.username && item.username.toLowerCase().includes(filters.user_name.toLowerCase())
+        (item.username || '').toLowerCase().includes((filters.user_name || '').toLowerCase())
       );
     }
 
@@ -256,7 +256,7 @@ const ReportsPage = () => {
                       <TableCell className="font-medium">{item.name}</TableCell>
                       <TableCell>
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(item.status)}`}>
-                          {item.status}
+                          {item.status || 'Disponível'}
                         </span>
                       </TableCell>
                       <TableCell>{item.username || '-'}</TableCell>

@@ -96,8 +96,8 @@ const ToolsPage = () => {
 
   useEffect(() => {
     let filtered = tools.filter(tool =>
-      (tool.name || '').toLowerCase().includes((searchTerm || '').toLowerCase()) ||
-      (tool.username ? tool.username.toLowerCase().includes((searchTerm || '').toLowerCase()) : false) ||
+      (tool.name || '').toLowerCase().includes((searchTerm || '').toLowerCase())
+      (tool.username || '').toLowerCase().includes((searchTerm || '').toLowerCase())
       (tool.status || '').toLowerCase().includes((searchTerm || '').toLowerCase())
     );
     if (userFilter && userFilter !== 'todos') {
