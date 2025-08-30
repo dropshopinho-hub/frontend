@@ -93,20 +93,27 @@ const ToolsPage = () => {
 
   useEffect(() => {
     fetchTools();
-    // eslint-disable-next-line
-  }, []);
+  }, [token]);
 
   useEffect(() => {
-    let filtered = tools.filter(tool =>
-      (tool.name || '').toLowerCase().includes((searchTerm || '').toLowerCase()) ||
-      (tool.username || '').toLowerCase().includes((searchTerm || '').toLowerCase()) ||
-      (tool.status || '').toLowerCase().includes((searchTerm || '').toLowerCase())
-    );
+    let filtered = tools;
+
+    // Filter by user
     if (userFilter && userFilter !== 'todos') {
       filtered = filtered.filter(tool => tool.username === userFilter);
     }
+
+    // Filter by search term
+    if (searchTerm) {
+      filtered = filtered.filter(tool =>
+        (tool.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (tool.username || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (tool.status || '').toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
     setFilteredTools(filtered);
-  }, [tools, searchTerm, userFilter]);
+  }, [tools, userFilter, searchTerm]);
 
   const fetchTools = async () => {
     try {
