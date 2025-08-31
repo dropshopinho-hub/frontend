@@ -229,7 +229,7 @@ const AssignmentsPage = () => {
               Nova Atribuição Múltipla
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-[95vw] w-[95vw] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Atribuir Ferramentas</DialogTitle>
               <DialogDescription>
@@ -271,15 +271,15 @@ const AssignmentsPage = () => {
                     <CardContent>
                       <div className="space-y-2">
                         {selectedTools.map((tool) => (
-                          <div key={tool.tool_id} className="grid grid-cols-12 gap-4 items-center p-3 border rounded hover:bg-gray-50">
-                            <div className="col-span-6">
-                              <span className="font-medium text-base">{tool.tool_name}</span>
-                              <div className="text-sm text-gray-500">
-                                Disponível: {tool.available_quantity}
+                          <div key={tool.tool_id} className="grid grid-cols-12 gap-6 items-center p-4 border rounded hover:bg-gray-50">
+                            <div className="col-span-7">
+                              <span className="font-medium text-lg">{tool.tool_name}</span>
+                              <div className="text-sm text-gray-500 mt-1">
+                                Disponível: {tool.available_quantity} unidade(s)
                               </div>
                             </div>
-                            <div className="col-span-3 flex items-center space-x-2">
-                              <Label htmlFor={`qty-${tool.tool_id}`} className="text-sm whitespace-nowrap">Quantidade:</Label>
+                            <div className="col-span-3 flex items-center space-x-3">
+                              <Label htmlFor={`qty-${tool.tool_id}`} className="text-sm whitespace-nowrap font-medium">Quantidade:</Label>
                               <Input
                                 id={`qty-${tool.tool_id}`}
                                 type="number"
@@ -287,15 +287,15 @@ const AssignmentsPage = () => {
                                 max={tool.available_quantity}
                                 value={tool.selected_quantity}
                                 onChange={(e) => updateSelectedQuantity(tool.tool_id, e.target.value)}
-                                className="w-20"
+                                className="w-24 text-center"
                               />
                             </div>
-                            <div className="col-span-3 flex justify-end">
+                            <div className="col-span-2 flex justify-end">
                               <Button 
                                 variant="outline" 
                                 size="sm"
                                 onClick={() => removeToolFromSelection(tool.tool_id)}
-                                className="w-full"
+                                className="w-full min-w-[100px]"
                               >
                                 <Trash2 className="w-4 h-4 mr-1" />
                                 Remover
@@ -325,9 +325,9 @@ const AssignmentsPage = () => {
                     <CardTitle>Ferramentas Disponíveis</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-2 max-h-80 overflow-y-auto">
+                    <div className="space-y-2 max-h-96 overflow-y-auto">
                       {filteredToolOptions.map((tool) => (
-                        <div key={tool.tool_id} className="grid grid-cols-12 gap-4 items-center p-4 border rounded hover:bg-gray-50 transition-colors">
+                        <div key={tool.tool_id} className="grid grid-cols-12 gap-6 items-center p-4 border rounded hover:bg-gray-50 transition-colors">
                           <div className="col-span-1 flex justify-center">
                             <Checkbox
                               checked={isToolSelected(tool.tool_id)}
@@ -340,13 +340,13 @@ const AssignmentsPage = () => {
                               }}
                             />
                           </div>
-                          <div className="col-span-7">
-                            <span className="font-medium text-base">{tool.tool_name}</span>
-                            <div className="text-sm text-gray-500">
+                          <div className="col-span-8">
+                            <span className="font-medium text-lg">{tool.tool_name}</span>
+                            <div className="text-sm text-gray-500 mt-1">
                               Disponível: {tool.available_quantity} unidade(s)
                             </div>
                           </div>
-                          <div className="col-span-2 flex justify-center">
+                          <div className="col-span-1 flex justify-center">
                             {isToolSelected(tool.tool_id) && (
                               <Badge variant="secondary">Selecionada</Badge>
                             )}
@@ -362,7 +362,7 @@ const AssignmentsPage = () => {
                                   addToolToSelection(tool);
                                 }
                               }}
-                              className="w-full"
+                              className="w-full min-w-[100px]"
                             >
                               {isToolSelected(tool.tool_id) ? 'Remover' : 'Selecionar'}
                             </Button>
@@ -424,15 +424,15 @@ const AssignmentsPage = () => {
                   <CardContent>
                     <div className="space-y-2">
                       {selectedTools.map((tool) => (
-                        <div key={tool.tool_id} className="grid grid-cols-12 gap-4 items-center p-3 border rounded hover:bg-gray-50">
+                        <div key={tool.tool_id} className="grid grid-cols-12 gap-6 items-center p-4 border rounded hover:bg-gray-50">
                           <div className="col-span-8">
-                            <span className="font-medium text-base">{tool.tool_name}</span>
-                            <div className="text-sm text-gray-500">
+                            <span className="font-medium text-lg">{tool.tool_name}</span>
+                            <div className="text-sm text-gray-500 mt-1">
                               Disponível: {tool.available_quantity} | Selecionado: {tool.selected_quantity}
                             </div>
                           </div>
                           <div className="col-span-4 flex justify-end">
-                            <Badge variant="outline" className="px-3 py-1">
+                            <Badge variant="outline" className="px-4 py-2 text-base">
                               Quantidade: {tool.selected_quantity}
                             </Badge>
                           </div>
