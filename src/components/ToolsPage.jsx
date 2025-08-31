@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Plus, Search } from 'lucide-react';
+import { Plus, Search, ChevronUp, ChevronDown } from 'lucide-react';
 
 const ToolsPage = () => {
   const { token, isAdmin } = useAuth();
@@ -28,6 +28,7 @@ const ToolsPage = () => {
   const [toolToDelete, setToolToDelete] = useState(null);
   const [actionError, setActionError] = useState('');
   const [editStatus, setEditStatus] = useState('');
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
 
   const openEditDialog = (tool) => {
     setToolToEdit(tool);
@@ -112,8 +113,47 @@ const ToolsPage = () => {
       );
     }
 
+    // Apply sorting
+    if (sortConfig.key) {
+      filtered.sort((a, b) => {
+        let aValue = a[sortConfig.key];
+        let bValue = b[sortConfig.key];
+        
+        // Handle null/undefined values
+        if (!aValue && !bValue) return 0;
+        if (!aValue) return 1;
+        if (!bValue) return -1;
+        
+        // Handle dates
+        if (sortConfig.key === 'assigned_at') {
+          aValue = aValue ? new Date(aValue) : new Date(0);
+          bValue = bValue ? new Date(bValue) : new Date(0);
+        }
+        
+        // Handle numbers
+        if (sortConfig.key === 'quantity') {
+          aValue = parseInt(aValue) || 0;
+          bValue = parseInt(bValue) || 0;
+        }
+        
+        // Handle strings
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+          aValue = aValue.toLowerCase();
+          bValue = bValue.toLowerCase();
+        }
+        
+        if (aValue < bValue) {
+          return sortConfig.direction === 'asc' ? -1 : 1;
+        }
+        if (aValue > bValue) {
+          return sortConfig.direction === 'asc' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+
     setFilteredTools(filtered);
-  }, [tools, userFilter, searchTerm]);
+  }, [tools, userFilter, searchTerm, sortConfig]);
 
   const fetchTools = async () => {
     try {
@@ -166,6 +206,22 @@ const ToolsPage = () => {
     } catch (error) {
       setError('Erro de conexão');
     }
+  };
+
+  const handleSort = (key) => {
+    setSortConfig(prevConfig => ({
+      key,
+      direction: prevConfig.key === key && prevConfig.direction === 'asc' ? 'desc' : 'asc'
+    }));
+  };
+
+  const getSortIcon = (columnKey) => {
+    if (sortConfig.key !== columnKey) {
+      return <ChevronUp className="w-4 h-4 text-gray-300" />;
+    }
+    return sortConfig.direction === 'asc' 
+      ? <ChevronUp className="w-4 h-4 text-blue-600" />
+      : <ChevronDown className="w-4 h-4 text-blue-600" />;
   };
 
   const getStatusColor = (status) => {
@@ -302,11 +358,51 @@ const ToolsPage = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Nome da Ferramenta</TableHead>
-                    <TableHead>Quantidade</TableHead>
-                    <TableHead>Usuário</TableHead>
-                    <TableHead>Data de Atribuição</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead 
+                      className="cursor-pointer hover:bg-gray-50 select-none"
+                      onClick={() => handleSort('name')}
+                    >
+                      <div className="flex items-center justify-between">
+                        Nome da Ferramenta
+                        {getSortIcon('name')}
+                      </div>
+                    </TableHead>
+                    <TableHead 
+                      className="cursor-pointer hover:bg-gray-50 select-none"
+                      onClick={() => handleSort('quantity')}
+                    >
+                      <div className="flex items-center justify-between">
+                        Quantidade
+                        {getSortIcon('quantity')}
+                      </div>
+                    </TableHead>
+                    <TableHead 
+                      className="cursor-pointer hover:bg-gray-50 select-none"
+                      onClick={() => handleSort('username')}
+                    >
+                      <div className="flex items-center justify-between">
+                        Usuário
+                        {getSortIcon('username')}
+                      </div>
+                    </TableHead>
+                    <TableHead 
+                      className="cursor-pointer hover:bg-gray-50 select-none"
+                      onClick={() => handleSort('assigned_at')}
+                    >
+                      <div className="flex items-center justify-between">
+                        Data de Atribuição
+                        {getSortIcon('assigned_at')}
+                      </div>
+                    </TableHead>
+                    <TableHead 
+                      className="cursor-pointer hover:bg-gray-50 select-none"
+                      onClick={() => handleSort('status')}
+                    >
+                      <div className="flex items-center justify-between">
+                        Status
+                        {getSortIcon('status')}
+                      </div>
+                    </TableHead>
                     {isAdmin && <TableHead>Ações</TableHead>}
                   </TableRow>
                 </TableHeader>
