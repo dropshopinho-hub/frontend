@@ -5,7 +5,7 @@ import { Badge } from './ui/badge';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { useAuth } from '../contexts/AuthContext';
-import { CheckCircle, XCircle, Clock, User, Package, Search, Filter, ChevronUp, ChevronDown } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, User, Package, Search, Filter, ChevronUp, ChevronDown, Square, CheckSquare } from 'lucide-react';
 
 const ReturnReceiptPage = () => {
   const [pendingReturns, setPendingReturns] = useState([]);
@@ -18,6 +18,8 @@ const ReturnReceiptPage = () => {
   const [toolFilter, setToolFilter] = useState('');
   const [dateFilter, setDateFilter] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [bulkAction, setBulkAction] = useState('');
   const { user, token } = useAuth();
 
   const apiFetch = async (url, options = {}) => {
@@ -71,47 +73,69 @@ const ReturnReceiptPage = () => {
     }
   };
 
-  const handleApprove = async (toolInstanceId, toolName) => {
+  const handleApprove = async (toolInstanceId, toolName, showMessages = true) => {
     try {
-      setError('');
-      setSuccess('');
+      if (showMessages) {
+        setError('');
+        setSuccess('');
+      }
       
       const response = await apiFetch(`/api/returns/approve/${toolInstanceId}`, {
         method: 'POST'
       });
 
       if (response.ok) {
-        setSuccess(`Devolução da ferramenta "${toolName}" aprovada com sucesso!`);
-        await fetchPendingReturns(); // Recarrega a lista
+        if (showMessages) {
+          setSuccess(`Devolução da ferramenta "${toolName}" aprovada com sucesso!`);
+          await fetchPendingReturns(); // Recarrega a lista
+        }
+        return true;
       } else {
         const errorData = await response.json();
-        setError(errorData.error || 'Erro ao aprovar devolução');
+        if (showMessages) {
+          setError(errorData.error || 'Erro ao aprovar devolução');
+        }
+        return false;
       }
     } catch (err) {
       console.error('Error approving return:', err);
-      setError('Erro de conexão ao aprovar devolução');
+      if (showMessages) {
+        setError('Erro de conexão ao aprovar devolução');
+      }
+      return false;
     }
   };
 
-  const handleReject = async (toolInstanceId, toolName) => {
+  const handleReject = async (toolInstanceId, toolName, showMessages = true) => {
     try {
-      setError('');
-      setSuccess('');
+      if (showMessages) {
+        setError('');
+        setSuccess('');
+      }
       
       const response = await apiFetch(`/api/returns/reject/${toolInstanceId}`, {
         method: 'POST'
       });
 
       if (response.ok) {
-        setSuccess(`Devolução da ferramenta "${toolName}" rejeitada. Ferramenta retornada ao usuário.`);
-        await fetchPendingReturns(); // Recarrega a lista
+        if (showMessages) {
+          setSuccess(`Devolução da ferramenta "${toolName}" rejeitada. Ferramenta retornada ao usuário.`);
+          await fetchPendingReturns(); // Recarrega a lista
+        }
+        return true;
       } else {
         const errorData = await response.json();
-        setError(errorData.error || 'Erro ao rejeitar devolução');
+        if (showMessages) {
+          setError(errorData.error || 'Erro ao rejeitar devolução');
+        }
+        return false;
       }
     } catch (err) {
       console.error('Error rejecting return:', err);
-      setError('Erro de conexão ao rejeitar devolução');
+      if (showMessages) {
+        setError('Erro de conexão ao rejeitar devolução');
+      }
+      return false;
     }
   };
 
@@ -213,6 +237,55 @@ const ReturnReceiptPage = () => {
     setSortConfig({ key: null, direction: 'asc' });
   };
 
+  const handleSelectItem = (itemId) => {
+    setSelectedItems(prev => {
+      if (prev.includes(itemId)) {
+        return prev.filter(id => id !== itemId);
+      } else {
+        return [...prev, itemId];
+      }
+    });
+  };
+
+  const handleSelectAll = () => {
+    if (selectedItems.length === filteredReturns.length) {
+      setSelectedItems([]);
+    } else {
+      setSelectedItems(filteredReturns.map(item => item.id));
+    }
+  };
+
+  const handleBulkAction = async (action) => {
+    if (selectedItems.length === 0) {
+      setError('Selecione pelo menos uma ferramenta');
+      return;
+    }
+
+    setError('');
+    setSuccess('');
+    
+    try {
+      const promises = selectedItems.map(itemId => {
+        const item = filteredReturns.find(r => r.id === itemId);
+        if (action === 'approve') {
+          return handleApprove(itemId, item?.tool_name, false);
+        } else {
+          return handleReject(itemId, item?.tool_name, false);
+        }
+      });
+
+      await Promise.all(promises);
+      
+      const actionText = action === 'approve' ? 'aprovadas' : 'rejeitadas';
+      setSuccess(`${selectedItems.length} devolução(ões) ${actionText} com sucesso!`);
+      setSelectedItems([]);
+      setBulkAction('');
+      await fetchPendingReturns();
+    } catch (err) {
+      setError('Erro ao processar ações em lote');
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-96">
@@ -232,6 +305,11 @@ const ReturnReceiptPage = () => {
           <Badge variant="secondary" className="text-lg px-3 py-1">
             {filteredReturns.length} de {pendingReturns.length} pendente(s)
           </Badge>
+          {selectedItems.length > 0 && (
+            <Badge variant="outline" className="text-lg px-3 py-1 bg-blue-50 text-blue-700">
+              {selectedItems.length} selecionada(s)
+            </Badge>
+          )}
         </div>
       </div>
 
@@ -306,8 +384,29 @@ const ReturnReceiptPage = () => {
             </div>
           </div>
 
-          {/* Botão Limpar Filtros */}
-          <div className="flex justify-end">
+          {/* Botões de Ação */}
+          <div className="flex justify-between items-center">
+            <div className="flex gap-2">
+              {selectedItems.length > 0 && (
+                <>
+                  <Button
+                    onClick={() => handleBulkAction('approve')}
+                    className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
+                  >
+                    <CheckCircle className="h-4 w-4" />
+                    Aprovar Selecionadas ({selectedItems.length})
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => handleBulkAction('reject')}
+                    className="flex items-center gap-2 text-red-600 border-red-200 hover:bg-red-50"
+                  >
+                    <XCircle className="h-4 w-4" />
+                    Rejeitar Selecionadas ({selectedItems.length})
+                  </Button>
+                </>
+              )}
+            </div>
             <Button
               variant="outline"
               onClick={clearFilters}
@@ -361,7 +460,20 @@ const ReturnReceiptPage = () => {
         <div className="space-y-4">
           {/* Cabeçalho da Tabela com Ordenação */}
           <div className="bg-gray-50 rounded-lg p-4">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 font-medium text-sm text-gray-700">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 font-medium text-sm text-gray-700">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleSelectAll}
+                  className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded"
+                >
+                  {selectedItems.length === filteredReturns.length && filteredReturns.length > 0 ? (
+                    <CheckSquare className="h-4 w-4 text-blue-600" />
+                  ) : (
+                    <Square className="h-4 w-4 text-gray-400" />
+                  )}
+                  Selecionar
+                </button>
+              </div>
               <div 
                 className="cursor-pointer hover:bg-gray-100 p-2 rounded flex items-center justify-between"
                 onClick={() => handleSort('tool_name')}
@@ -389,7 +501,12 @@ const ReturnReceiptPage = () => {
 
           {/* Lista de Devoluções */}
           {filteredReturns.map((item) => (
-            <Card key={item.id} className="border-l-4 border-l-yellow-400">
+            <Card 
+              key={item.id} 
+              className={`border-l-4 border-l-yellow-400 ${
+                selectedItems.includes(item.id) ? 'ring-2 ring-blue-500 bg-blue-50' : ''
+              }`}
+            >
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -403,7 +520,19 @@ const ReturnReceiptPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 items-center">
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6 items-center">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleSelectItem(item.id)}
+                      className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded"
+                    >
+                      {selectedItems.includes(item.id) ? (
+                        <CheckSquare className="h-4 w-4 text-blue-600" />
+                      ) : (
+                        <Square className="h-4 w-4 text-gray-400" />
+                      )}
+                    </button>
+                  </div>
                   <div className="flex items-center gap-2">
                     <Package className="h-4 w-4 text-blue-600" />
                     <span className="font-medium">{item.tool_name || 'Ferramenta não identificada'}</span>
