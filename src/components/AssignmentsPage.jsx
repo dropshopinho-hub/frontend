@@ -278,7 +278,7 @@ const AssignmentsPage = () => {
                                 Disponível: {tool.available_quantity} unidade(s)
                               </div>
                             </div>
-                            <div className="col-span-4 flex items-center space-x-2">
+                            <div className="col-span-4 flex items-center space-x-3">
                               <Label htmlFor={`qty-${tool.tool_id}`} className="text-sm whitespace-nowrap font-medium">Quantidade:</Label>
                               <Input
                                 id={`qty-${tool.tool_id}`}
@@ -287,7 +287,7 @@ const AssignmentsPage = () => {
                                 max={tool.available_quantity}
                                 value={tool.selected_quantity}
                                 onChange={(e) => updateSelectedQuantity(tool.tool_id, e.target.value)}
-                                className="w-20 text-center"
+                                className="w-16 h-10 text-center text-base font-medium border-2 border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 bg-white"
                               />
                             </div>
                             <div className="col-span-3 flex justify-end">
