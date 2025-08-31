@@ -271,31 +271,33 @@ const AssignmentsPage = () => {
                     <CardContent>
                       <div className="space-y-2">
                         {selectedTools.map((tool) => (
-                          <div key={tool.tool_id} className="grid grid-cols-12 gap-4 items-center p-4 border rounded hover:bg-gray-50">
-                            <div className="col-span-5">
-                              <span className="font-medium text-lg">{tool.tool_name}</span>
-                              <div className="text-sm text-gray-500 mt-1">
-                                Disponível: {tool.available_quantity} unidade(s)
+                          <div key={tool.tool_id} className="p-4 border rounded hover:bg-gray-50 space-y-3">
+                            <div className="flex justify-between items-start">
+                              <div className="flex-1">
+                                <span className="font-medium text-lg">{tool.tool_name}</span>
+                                <div className="text-sm text-gray-500 mt-1">
+                                  Disponível: {tool.available_quantity} unidade(s)
+                                </div>
                               </div>
                             </div>
-                            <div className="col-span-4 flex items-center space-x-3">
-                              <Label htmlFor={`qty-${tool.tool_id}`} className="text-sm whitespace-nowrap font-medium">Quantidade:</Label>
-                              <Input
-                                id={`qty-${tool.tool_id}`}
-                                type="number"
-                                min="1"
-                                max={tool.available_quantity}
-                                value={tool.selected_quantity}
-                                onChange={(e) => updateSelectedQuantity(tool.tool_id, e.target.value)}
-                                className="w-16 h-10 text-center text-base font-medium border-2 border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 bg-white"
-                              />
-                            </div>
-                            <div className="col-span-3 flex justify-end">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center space-x-4">
+                                <Label htmlFor={`qty-${tool.tool_id}`} className="text-sm font-medium">Quantidade:</Label>
+                                <Input
+                                  id={`qty-${tool.tool_id}`}
+                                  type="number"
+                                  min="1"
+                                  max={tool.available_quantity}
+                                  value={tool.selected_quantity}
+                                  onChange={(e) => updateSelectedQuantity(tool.tool_id, e.target.value)}
+                                  className="w-24 h-12 text-center text-lg font-bold border-2 border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 bg-white rounded-md"
+                                />
+                              </div>
                               <Button 
                                 variant="outline" 
                                 size="sm"
                                 onClick={() => removeToolFromSelection(tool.tool_id)}
-                                className="w-full"
+                                className="ml-4"
                               >
                                 <Trash2 className="w-4 h-4 mr-1" />
                                 Remover
