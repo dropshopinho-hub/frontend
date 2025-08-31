@@ -1,0 +1,6 @@
+Frontend changes made:
+- Updated .env file to point to correct backend URL
+- Changed from backend-k4fk.onrender.com to tool-management-backend-new.onrender.com
+
+Please commit these changes to the frontend repository.
+Timestamp: 2025-08-31 01:13:21
