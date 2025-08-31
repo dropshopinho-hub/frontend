@@ -109,38 +109,52 @@ const AssignmentsPage = () => {
     }
 
     try {
-      // Enviar cada atribuição individualmente
-      const promises = selectedTools.map(tool => 
-        apiFetch('/api/assignments', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            tool_id: tool.tool_id,
-            user_id: targetUserId,
-            quantity: tool.selected_quantity
-          })
-        })
-      );
-
-      const responses = await Promise.all(promises);
-      const failedAssignments = responses.filter(r => !r.ok);
+      // Enviar cada atribuição individualmente com tratamento de erro melhorado
+      const results = [];
       
-      if (failedAssignments.length === 0) {
+      for (const tool of selectedTools) {
+        try {
+          const response = await apiFetch('/api/assignments', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              tool_id: tool.tool_id,
+              user_id: targetUserId,
+              quantity: tool.selected_quantity
+            })
+          });
+
+          if (response.ok) {
+            results.push({ success: true, tool: tool.tool_name });
+          } else {
+            const errorData = await response.json();
+            results.push({ success: false, tool: tool.tool_name, error: errorData.error });
+          }
+        } catch (err) {
+          results.push({ success: false, tool: tool.tool_name, error: 'Erro de conexão' });
+        }
+      }
+
+      const successCount = results.filter(r => r.success).length;
+      const failedResults = results.filter(r => !r.success);
+      
+      if (failedResults.length === 0) {
         setSelectedTools([]);
         setTargetUserId('');
         setIsDialogOpen(false);
         setShowPreview(false);
-        setSuccessMessage(`${selectedTools.length} ferramenta(s) atribuída(s) com sucesso!`);
+        setSuccessMessage(`${successCount} ferramenta(s) atribuída(s) com sucesso!`);
         fetchData();
         setTimeout(() => setSuccessMessage(''), 4000);
       } else {
-        setError(`${failedAssignments.length} atribuição(ões) falharam. Verifique a disponibilidade.`);
+        const errorMessages = failedResults.map(r => `${r.tool}: ${r.error}`).join('; ');
+        setError(`${failedResults.length} atribuição(ões) falharam: ${errorMessages}`);
       }
     } catch (error) {
-      setError('Erro de conexão');
+      setError('Erro de conexão geral');
     }
   };
 
@@ -215,7 +229,7 @@ const AssignmentsPage = () => {
               Nova Atribuição Múltipla
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Atribuir Ferramentas</DialogTitle>
               <DialogDescription>
@@ -255,17 +269,17 @@ const AssignmentsPage = () => {
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-3">
+                      <div className="space-y-2">
                         {selectedTools.map((tool) => (
-                          <div key={tool.tool_id} className="flex items-center justify-between p-3 border rounded">
-                            <div className="flex-1">
-                              <span className="font-medium">{tool.tool_name}</span>
-                              <span className="text-sm text-gray-500 ml-2">
-                                (Disponível: {tool.available_quantity})
-                              </span>
+                          <div key={tool.tool_id} className="grid grid-cols-12 gap-4 items-center p-3 border rounded hover:bg-gray-50">
+                            <div className="col-span-6">
+                              <span className="font-medium text-base">{tool.tool_name}</span>
+                              <div className="text-sm text-gray-500">
+                                Disponível: {tool.available_quantity}
+                              </div>
                             </div>
-                            <div className="flex items-center space-x-2">
-                              <Label htmlFor={`qty-${tool.tool_id}`} className="text-sm">Qtd:</Label>
+                            <div className="col-span-3 flex items-center space-x-2">
+                              <Label htmlFor={`qty-${tool.tool_id}`} className="text-sm whitespace-nowrap">Quantidade:</Label>
                               <Input
                                 id={`qty-${tool.tool_id}`}
                                 type="number"
@@ -275,12 +289,16 @@ const AssignmentsPage = () => {
                                 onChange={(e) => updateSelectedQuantity(tool.tool_id, e.target.value)}
                                 className="w-20"
                               />
+                            </div>
+                            <div className="col-span-3 flex justify-end">
                               <Button 
                                 variant="outline" 
                                 size="sm"
                                 onClick={() => removeToolFromSelection(tool.tool_id)}
+                                className="w-full"
                               >
-                                <Trash2 className="w-4 h-4" />
+                                <Trash2 className="w-4 h-4 mr-1" />
+                                Remover
                               </Button>
                             </div>
                           </div>
@@ -307,10 +325,10 @@ const AssignmentsPage = () => {
                     <CardTitle>Ferramentas Disponíveis</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-60 overflow-y-auto">
+                    <div className="space-y-2 max-h-80 overflow-y-auto">
                       {filteredToolOptions.map((tool) => (
-                        <div key={tool.tool_id} className="flex items-center justify-between p-3 border rounded hover:bg-gray-50">
-                          <div className="flex items-center space-x-3">
+                        <div key={tool.tool_id} className="grid grid-cols-12 gap-4 items-center p-4 border rounded hover:bg-gray-50 transition-colors">
+                          <div className="col-span-1 flex justify-center">
                             <Checkbox
                               checked={isToolSelected(tool.tool_id)}
                               onCheckedChange={(checked) => {
@@ -321,16 +339,34 @@ const AssignmentsPage = () => {
                                 }
                               }}
                             />
-                            <div>
-                              <span className="font-medium">{tool.tool_name}</span>
-                              <div className="text-sm text-gray-500">
-                                Disponível: {tool.available_quantity}
-                              </div>
+                          </div>
+                          <div className="col-span-7">
+                            <span className="font-medium text-base">{tool.tool_name}</span>
+                            <div className="text-sm text-gray-500">
+                              Disponível: {tool.available_quantity} unidade(s)
                             </div>
                           </div>
-                          {isToolSelected(tool.tool_id) && (
-                            <Badge variant="secondary">Selecionada</Badge>
-                          )}
+                          <div className="col-span-2 flex justify-center">
+                            {isToolSelected(tool.tool_id) && (
+                              <Badge variant="secondary">Selecionada</Badge>
+                            )}
+                          </div>
+                          <div className="col-span-2 flex justify-end">
+                            <Button 
+                              variant={isToolSelected(tool.tool_id) ? "secondary" : "outline"} 
+                              size="sm"
+                              onClick={() => {
+                                if (isToolSelected(tool.tool_id)) {
+                                  removeToolFromSelection(tool.tool_id);
+                                } else {
+                                  addToolToSelection(tool);
+                                }
+                              }}
+                              className="w-full"
+                            >
+                              {isToolSelected(tool.tool_id) ? 'Remover' : 'Selecionar'}
+                            </Button>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -388,16 +424,30 @@ const AssignmentsPage = () => {
                   <CardContent>
                     <div className="space-y-2">
                       {selectedTools.map((tool) => (
-                        <div key={tool.tool_id} className="flex justify-between items-center p-2 border rounded">
-                          <span className="font-medium">{tool.tool_name}</span>
-                          <Badge variant="outline">
-                            Quantidade: {tool.selected_quantity}
-                          </Badge>
+                        <div key={tool.tool_id} className="grid grid-cols-12 gap-4 items-center p-3 border rounded hover:bg-gray-50">
+                          <div className="col-span-8">
+                            <span className="font-medium text-base">{tool.tool_name}</span>
+                            <div className="text-sm text-gray-500">
+                              Disponível: {tool.available_quantity} | Selecionado: {tool.selected_quantity}
+                            </div>
+                          </div>
+                          <div className="col-span-4 flex justify-end">
+                            <Badge variant="outline" className="px-3 py-1">
+                              Quantidade: {tool.selected_quantity}
+                            </Badge>
+                          </div>
                         </div>
                       ))}
                     </div>
-                    <div className="mt-4 p-3 bg-blue-50 rounded">
-                      <strong>Total: {selectedTools.reduce((sum, tool) => sum + tool.selected_quantity, 0)} item(s)</strong>
+                    <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <strong>Total de Ferramentas: {selectedTools.length}</strong>
+                        </div>
+                        <div className="text-right">
+                          <strong>Total de Itens: {selectedTools.reduce((sum, tool) => sum + tool.selected_quantity, 0)}</strong>
+                        </div>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
