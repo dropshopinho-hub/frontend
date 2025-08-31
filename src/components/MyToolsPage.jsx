@@ -382,3 +382,4 @@ const MyToolsPage = () => {
 };
 
 export default MyToolsPage;
+// Manual edit to trigger GitHub Desktop detection
