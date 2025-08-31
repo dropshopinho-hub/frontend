@@ -284,6 +284,7 @@ const MyToolsPage = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Ferramenta</TableHead>
+                    <TableHead>De</TableHead>
                     <TableHead>Quantidade</TableHead>
                     <TableHead>Data da Transferência</TableHead>
                     <TableHead>Ações</TableHead>
@@ -292,7 +293,8 @@ const MyToolsPage = () => {
                 <TableBody>
                   {pendingTransfers.map((transfer) => (
                     <TableRow key={transfer.id}>
-                      <TableCell className="font-medium">{transfer.name}</TableCell>
+                      <TableCell className="font-medium">{transfer.tool_name || transfer.name}</TableCell>
+                      <TableCell>{transfer.from_user_name}</TableCell>
                       <TableCell>{transfer.quantity}</TableCell>
                       <TableCell>
                         {new Date(transfer.transfer_initiated_at).toLocaleDateString('pt-BR')}
